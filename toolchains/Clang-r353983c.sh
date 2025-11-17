@@ -7,10 +7,6 @@ clang="${outside}/aosp_clang11"
 gcc64="${outside}/aosp_gcc64_49"
 gcc="${outside}/aosp_gcc_49"
 
-git remote add upstream https://github.com/Sakurajima07/kernel_xiaomi_dandelion
-git fetch upstream
-git cherry-pick 35314406f6f7f6ed6a09034ffdd2f5dfe4b1dbb9
-
 case $1 in
   "setup" )
     # Clone compiler
