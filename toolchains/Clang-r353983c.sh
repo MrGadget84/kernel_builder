@@ -11,15 +11,13 @@ case $1 in
   "setup" )
     # Clone compiler
     if [ ! -d $clang ]; then
-    cd $clang
-    wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/android-10.0.0_r3/clang-r353983c.tar.gz
-    cd $maindir
+    git clone --depth=1 https://github.com/dandelion64-Archives/clang-r353983c $clang
     fi
     if [ ! -d $gcc64 ]; then
-    git clone --depth=1 https://github.com/TeraaBytee/aarch64-linux-android-4.9 $gcc64
+    git clone --depth=1 https://github.com/dandelion64-Archives/aarch64-linux-android-4.9 $gcc64
     fi
     if [ ! -d $gcc ]; then
-    git clone --depth=1 https://github.com/TeraaBytee/arm-linux-androideabi-4.9 $gcc
+    git clone --depth=1 https://github.com/dandelion64-Archives/arm-linux-androideabi-4.9 $gcc
     fi
   ;;
 
