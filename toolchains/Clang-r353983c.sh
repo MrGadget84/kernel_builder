@@ -11,7 +11,9 @@ case $1 in
   "setup" )
     # Clone compiler
     if [ ! -d $clang ]; then
-    git clone --depth=1 https://github.com/TeraaBytee/google-clang $clang
+    cd $clang
+    wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/android-10.0.0_r3/clang-r353983c.tar.gz
+    cd $maindir
     fi
     if [ ! -d $gcc64 ]; then
     git clone --depth=1 https://github.com/TeraaBytee/aarch64-linux-android-4.9 $gcc64
