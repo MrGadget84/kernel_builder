@@ -6,6 +6,7 @@ outside="${maindir}/.."
 clang="${outside}/aosp_clang11"
 gcc64="${outside}/aosp_gcc64_49"
 gcc="${outside}/aosp_gcc_49"
+apt install python2
 
 case $1 in
   "setup" )
