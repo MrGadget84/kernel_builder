@@ -16,15 +16,15 @@ on: # [push]
       COMPILER:
         description: 'compilers used'
         required: true
-        default: 'shattered-Clang-15'
+        default: 'AOSP-Clang-15'
       KREPO:
         description: 'kernel repo'
         required: true
-        default: 'https://github.com/Sakurajima07/kernel_xiaomi_blossom'
+        default: 'https://github.com/Sakurajima07/kernel_xiaomi_dandelion'
       KBRANCH:
         description: 'kernel branch'
         required: true
-        default: 'reveal'
+        default: 'dandelion-q-oss'
       NOTES:
         description: 'notes to print out'
         required: false
