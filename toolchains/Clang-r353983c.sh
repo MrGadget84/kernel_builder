@@ -23,15 +23,13 @@ case $1 in
 
   "build" )
     export PATH="$clang/bin:$gcc64/bin:$gcc/bin:/usr/bin:${PATH}"
-    make -j$NJOBS O=out CC=clang LD=ld.lld ARCH=arm SUBARCH=arm $2
-    make -j$NJOBS O=out CC=clang LD=ld.lld ARCH=arm SUBARCH=arm oldconfig
+    make -j$NJOBS O=out LD=ld.lld ARCH=arm SUBARCH=arm $2
+    make -j$NJOBS O=out LD=ld.lld ARCH=arm SUBARCH=arm oldconfig
     make -j$NJOBS O=out \
-      CROSS_COMPILE="aarch64-linux-android-" \
-      CROSS_COMPILE_ARM32="arm-linux-androideabi-" \
+      CROSS_COMPILE="arm-linux-androideabi-" \
       CROSS_COMPILE_COMPAT="arm-linux-androideabi-" \
-      CLANG_TRIPLE="aarch64-linux-gnu-" \
-      LD_LIBRARY_PATH="$clang/lib64:$LD_LIBRABRY_PATH" \
-      CC=clang \
+      CLANG_TRIPLE="arm-linux-gnueabi-" \
+      LD_LIBRARY_PATH="$clang/lib64:$LD_LIBRARY_PATH" \
       LD=ld.lld \
       2>&1 | tee ${CUR_TOOLCHAIN}.log
     sh ${outside}/ver_toolchain.sh clang ld.lld > ${CUR_TOOLCHAIN}.info
