@@ -115,6 +115,12 @@ jobs:
             cd kernel
             source ../env
             bash ../tg_utils.sh msg "gh $RUN_NUM: kernel name: ${kernel_name}%nlgh $RUN_NUM: kernel ver: ${kernel_ver}%nlgh $RUN_NUM: kernel head commit: ${kernel_head}%nlgh $RUN_NUM: defconfig: ${defconfig}"
+            
+        - name: Fix KernelSU for old kernels
+          run: |
+           sed -i '/MODULE_IMPORT_NS/d' drivers/kernelsu/ksu.c || true
+    # Или закомментируем
+    # sed -i 's/^MODULE_IMPORT_NS/\/\/ MODULE_IMPORT_NS/' drivers/kernelsu/ksu.c
         - name: run compilation scripts
           run: |
             cd kernel
