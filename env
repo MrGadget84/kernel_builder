@@ -7,6 +7,7 @@ export outside="${maindir}/.."
 
 #
 
+make O=out
 export ARCH="arm"
 export SUBARCH="arm"
 export KBUILD_BUILD_USER="MrGadget84"
