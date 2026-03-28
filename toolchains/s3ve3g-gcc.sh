@@ -35,13 +35,16 @@ case $1 in
     export CROSS_COMPILE=arm-eabi-
     export PATH="/opt/gcc-4.9.3/bin:$PATH"
     
+    # Устанавливаем lzop (нужен для сжатия ядра)
+    dnf install -y lzop
+    
     cd "${maindir}"
     
     echo "Building in: $(pwd)"
     
     mkdir -p out
     
-    # Создаём обёртку для gcc (прокси)
+    # Создаём обёртку для gcc
     cat > scripts/gcc-wrapper.py << 'EOF'
 #!/usr/bin/env python3
 import sys
@@ -53,7 +56,7 @@ EOF
     chmod +x scripts/gcc-wrapper.py
     sed -i 's|scripts/gcc-wrapper.py|./scripts/gcc-wrapper.py|g' scripts/Makefile
     
-    # Отключаем сборку dtc (используем системный)
+    # Отключаем сборку dtc
     cat > scripts/dtc/Makefile << 'EOF'
 hostprogs-y :=
 always-y :=
@@ -77,7 +80,7 @@ EOF
     
     make O=out ARCH=arm "$DEFCONFIG"
     
-    # Отключаем проблемные криптографические модули
+    # Отключаем проблемные криптомодули
     echo "Disabling ARM crypto modules that cause Thumb errors..."
     scripts/config --file out/.config --disable CRYPTO_AES_ARM_BS
     scripts/config --file out/.config --disable CRYPTO_AES_ARM
