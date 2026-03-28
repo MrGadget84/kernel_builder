@@ -16,7 +16,7 @@ on: # [push]
       COMPILER:
         description: 'compilers used'
         required: true
-        default: 'gcc-4.9.3'
+        default: 's3ve3g-gcc'
       KREPO:
         description: 'kernel repo'
         required: true
