@@ -33,13 +33,13 @@ case $1 in
     export CROSS_COMPILE=arm-eabi-
     export PATH="/opt/gcc-4.9.3/bin:$PATH"
     
-    # maindir уже указывает на папку с ядром, не добавляем лишний /kernel
-    echo "Current directory: ${maindir}"
+    # Переходим в папку ядра
     cd "${maindir}"
     
-    echo "Now in: $(pwd)"
-    echo "Checking defconfig directory:"
-    ls -la arch/arm/configs/ | head -20
+    echo "Building in: $(pwd)"
+    
+    # Создаём директорию out
+    mkdir -p out
     
     # Исправляем gcc-wrapper.py
     if [ -f scripts/gcc-wrapper.py ]; then
@@ -60,17 +60,21 @@ case $1 in
     if [ ! -f "arch/arm/configs/$DEFCONFIG" ]; then
       echo "ERROR: Defconfig $DEFCONFIG not found!"
       echo "Available defconfigs:"
-      ls arch/arm/configs/
+      ls arch/arm/configs/ | grep -E "(s3ve3g|cyanogenmod)"
       exit 1
     fi
     
+    # Конфигурация
     make O=out ARCH=arm "$DEFCONFIG"
     
-    echo "Building kernel..."
+    # Сборка
+    echo "Building kernel with ${NJOBS:-$(nproc)} jobs..."
     make -j${NJOBS:-$(nproc)} O=out ARCH=arm 2>&1 | tee build.log
     
+    # Сохраняем информацию о компиляторе
     arm-eabi-gcc --version > "${maindir}/${toolchain}.info" 2>&1
     
+    # Проверяем результат
     if [ -f out/arch/arm/boot/zImage ]; then
       export out_image="${maindir}/out/arch/arm/boot/zImage"
       export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
