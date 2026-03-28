@@ -43,32 +43,21 @@ case $1 in
     
     # Исправляем gcc-wrapper.py
     if [ -f scripts/gcc-wrapper.py ]; then
-      echo "Fixing gcc-wrapper.py for Python 3..."
       sed -i 's/print "\(.*\)"/print("\1")/g' scripts/gcc-wrapper.py
       sed -i 's/print \(.*\),/print(\1, end=" ")/g' scripts/gcc-wrapper.py
     fi
     
-    # ПОЛНОЕ ИСПРАВЛЕНИЕ DTC
-    echo "Fixing dtc yylloc issue..."
-    if [ -f scripts/dtc/dtc-lexer.l ]; then
-      # Удаляем extern объявления в обоих файлах
-      sed -i 's/extern YYLTYPE yylloc;//' scripts/dtc/dtc-lexer.l
-      sed -i 's/extern YYLTYPE yylloc;//' scripts/dtc/dtc-parser.y
-      
-      # Добавляем определение в lexer
-      sed -i '/^#include "dtc.h"/a YYLTYPE yylloc;' scripts/dtc/dtc-lexer.l
-      
-      # Удаляем старые сгенерированные файлы
-      rm -f scripts/dtc/dtc-lexer.lex.c
-      rm -f scripts/dtc/dtc-parser.tab.c
-      rm -f scripts/dtc/dtc-parser.tab.h
-      
-      # Перегенерируем
-      cd scripts/dtc
-      flex -o dtc-lexer.lex.c dtc-lexer.l
-      bison -o dtc-parser.tab.c dtc-parser.y
-      cd ../..
+    # ПРОСТО КОПИРУЕМ ГОТОВЫЙ dtc ИЗ СИСТЕМЫ
+    echo "Using system dtc instead of building..."
+    if command -v dtc &> /dev/null; then
+      mkdir -p scripts/dtc
+      cp $(which dtc) scripts/dtc/dtc 2>/dev/null || true
     fi
+    
+    # ИЛИ ПРОСТО ОТКЛЮЧАЕМ СБОРКУ dtc
+    echo "Disabling dtc build..."
+    sed -i 's/^hostprogs-.*/hostprogs-$(CONFIG_DTC) :=/' scripts/dtc/Makefile
+    sed -i 's/^always.*/always-$(CONFIG_DTC) :=/' scripts/dtc/Makefile
     
     DEFCONFIG="$2"
     if [ -z "$DEFCONFIG" ]; then
@@ -79,17 +68,14 @@ case $1 in
     
     if [ ! -f "arch/arm/configs/$DEFCONFIG" ]; then
       echo "ERROR: Defconfig $DEFCONFIG not found!"
-      echo "Available defconfigs:"
-      ls arch/arm/configs/ | grep -E "(s3ve3g|cyanogenmod)"
+      ls arch/arm/configs/ | head -20
       exit 1
     fi
     
     make O=out ARCH=arm "$DEFCONFIG"
     
-    echo "Building kernel with ${NJOBS:-$(nproc)} jobs..."
-    make -j${NJOBS:-$(nproc)} O=out ARCH=arm 2>&1 | tee build.log
-    
-    arm-eabi-gcc --version > "${maindir}/${toolchain}.info" 2>&1
+    echo "Building kernel with ${NJOBS:-4} jobs..."
+    make -j${NJOBS:-4} O=out ARCH=arm 2>&1 | tee build.log
     
     if [ -f out/arch/arm/boot/zImage ]; then
       export out_image="${maindir}/out/arch/arm/boot/zImage"
@@ -106,5 +92,4 @@ case $1 in
     echo "Usage: $0 {setup|build} [defconfig]"
     exit 1
     ;;
-esac
 esac
