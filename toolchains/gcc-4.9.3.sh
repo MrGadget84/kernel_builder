@@ -33,11 +33,9 @@ case $1 in
     export CROSS_COMPILE=arm-eabi-
     export PATH="/opt/gcc-4.9.3/bin:$PATH"
     
-    echo "Current directory: $(pwd)"
-    echo "maindir: ${maindir}"
-    echo "Changing to: ${maindir}/kernel"
-    
-    cd "${maindir}/kernel"
+    # maindir уже указывает на папку с ядром, не добавляем лишний /kernel
+    echo "Current directory: ${maindir}"
+    cd "${maindir}"
     
     echo "Now in: $(pwd)"
     echo "Checking defconfig directory:"
@@ -45,7 +43,7 @@ case $1 in
     
     # Исправляем gcc-wrapper.py
     if [ -f scripts/gcc-wrapper.py ]; then
-      echo "Fixing gcc-wrapper.py..."
+      echo "Fixing gcc-wrapper.py for Python 3..."
       sed -i 's/print "\(.*\)"/print("\1")/g' scripts/gcc-wrapper.py
       sed -i 's/print \(.*\),/print(\1, end=" ")/g' scripts/gcc-wrapper.py
       sed -i "s/print '\(.*\)'/print('\1')/g" scripts/gcc-wrapper.py
@@ -57,7 +55,7 @@ case $1 in
       DEFCONFIG="cyanogenmod_s3ve3g_defconfig"
     fi
     
-    echo "Looking for: arch/arm/configs/$DEFCONFIG"
+    echo "Using defconfig: $DEFCONFIG"
     
     if [ ! -f "arch/arm/configs/$DEFCONFIG" ]; then
       echo "ERROR: Defconfig $DEFCONFIG not found!"
@@ -66,7 +64,6 @@ case $1 in
       exit 1
     fi
     
-    echo "Using defconfig: $DEFCONFIG"
     make O=out ARCH=arm "$DEFCONFIG"
     
     echo "Building kernel..."
@@ -75,8 +72,8 @@ case $1 in
     arm-eabi-gcc --version > "${maindir}/${toolchain}.info" 2>&1
     
     if [ -f out/arch/arm/boot/zImage ]; then
-      export out_image="${maindir}/kernel/out/arch/arm/boot/zImage"
-      export out_dtb="${maindir}/kernel/out/arch/arm/boot/dt.img"
+      export out_image="${maindir}/out/arch/arm/boot/zImage"
+      export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
       echo "Build successful!"
       ls -lh out/arch/arm/boot/zImage
     else
