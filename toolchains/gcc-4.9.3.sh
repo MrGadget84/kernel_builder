@@ -39,17 +39,37 @@ case $1 in
     
     # Исправляем gcc-wrapper.py для Python 3
     if [ -f scripts/gcc-wrapper.py ]; then
+      echo "Fixing gcc-wrapper.py for Python 3..."
       sed -i 's/print "\(.*\)"/print("\1")/g' scripts/gcc-wrapper.py
       sed -i 's/print \(.*\),/print(\1, end=" ")/g' scripts/gcc-wrapper.py
-      sed -i 's/print line,/print(line.decode("utf-8"), end="")/g' scripts/gcc-wrapper.py
-      sed -i "s/print args\[0\] + ':'/print(args[0] + ':',/g" scripts/gcc-wrapper.py
-      sed -i "s/print 'Is your PATH set correctly?'/print('Is your PATH set correctly?')/g" scripts/gcc-wrapper.py
     fi
     
-    # Конфигурация и сборка
-    make O=out ARCH=arm $2
+    # Находим правильный defconfig
+    DEFCONFIG="$2"
+    if [ -z "$DEFCONFIG" ]; then
+      # Ищем defconfig для s3ve3g
+      DEFCONFIG=$(ls arch/arm/configs/*s3ve3g* 2>/dev/null | head -1 | xargs basename)
+      if [ -z "$DEFCONFIG" ]; then
+        # Ищем cyanogenmod defconfig
+        DEFCONFIG=$(ls arch/arm/configs/cyanogenmod* 2>/dev/null | head -1 | xargs basename)
+      fi
+      echo "Auto-detected defconfig: $DEFCONFIG"
+    fi
     
-    # Сборка с выводом ошибок
+    # Проверяем существует ли defconfig
+    if [ ! -f "arch/arm/configs/$DEFCONFIG" ]; then
+      echo "ERROR: Defconfig $DEFCONFIG not found!"
+      echo "Available defconfigs:"
+      ls arch/arm/configs/ | grep -E "(s3ve3g|cyanogenmod)" || ls arch/arm/configs/ | head -10
+      exit 1
+    fi
+    
+    # Конфигурация
+    echo "Using defconfig: $DEFCONFIG"
+    make O=out ARCH=arm "$DEFCONFIG"
+    
+    # Сборка
+    echo "Building kernel with $NJOBS jobs..."
     make -j${NJOBS} O=out ARCH=arm 2>&1 | tee build.log
     
     # Сохраняем информацию о компиляторе
@@ -60,15 +80,16 @@ case $1 in
     if [ -f out/arch/arm/boot/zImage ]; then
       export out_image="${maindir}/kernel/out/arch/arm/boot/zImage"
       export out_dtb="${maindir}/kernel/out/arch/arm/boot/dt.img"
-      echo "Build successful"
+      echo "Build successful: $out_image"
     else
       echo "Build failed: zImage not found"
+      echo "Check build.log for errors"
       exit 1
     fi
     ;;
     
   * )
-    echo "Usage: $0 {setup|build}"
+    echo "Usage: $0 {setup|build} [defconfig]"
     exit 1
     ;;
 esac
