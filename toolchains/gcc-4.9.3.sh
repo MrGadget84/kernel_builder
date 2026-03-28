@@ -23,7 +23,7 @@ case $1 in
     sudo ln -sf "$INSTALL_DIR/bin/arm-linux-gnueabihf-ar" "$INSTALL_DIR/bin/arm-eabi-ar"
     
     export PATH="$INSTALL_DIR/bin:$PATH"
-    echo "GCC 4.9.3 installed"
+    echo "GCC installed:"
     arm-eabi-gcc --version
     ;;
 
@@ -33,48 +33,54 @@ case $1 in
     export CROSS_COMPILE=arm-eabi-
     export PATH="/opt/gcc-4.9.3/bin:$PATH"
     
-    # Правильная директория: maindir/kernel
+    echo "Current directory: $(pwd)"
+    echo "maindir: ${maindir}"
+    echo "Changing to: ${maindir}/kernel"
+    
     cd "${maindir}/kernel"
     
-    # Исправляем gcc-wrapper.py для Python 3
+    echo "Now in: $(pwd)"
+    echo "Checking defconfig directory:"
+    ls -la arch/arm/configs/ | head -20
+    
+    # Исправляем gcc-wrapper.py
     if [ -f scripts/gcc-wrapper.py ]; then
-      echo "Fixing gcc-wrapper.py for Python 3..."
+      echo "Fixing gcc-wrapper.py..."
       sed -i 's/print "\(.*\)"/print("\1")/g' scripts/gcc-wrapper.py
       sed -i 's/print \(.*\),/print(\1, end=" ")/g' scripts/gcc-wrapper.py
       sed -i "s/print '\(.*\)'/print('\1')/g" scripts/gcc-wrapper.py
       sed -i 's/print line,/print(line.decode("utf-8"), end="")/g' scripts/gcc-wrapper.py
     fi
     
-    # Используем defconfig из переменной
     DEFCONFIG="$2"
     if [ -z "$DEFCONFIG" ]; then
       DEFCONFIG="cyanogenmod_s3ve3g_defconfig"
     fi
     
-    # Проверяем существует ли defconfig
+    echo "Looking for: arch/arm/configs/$DEFCONFIG"
+    
     if [ ! -f "arch/arm/configs/$DEFCONFIG" ]; then
       echo "ERROR: Defconfig $DEFCONFIG not found!"
       echo "Available defconfigs:"
-      ls arch/arm/configs/ | head -20
+      ls arch/arm/configs/
       exit 1
     fi
     
     echo "Using defconfig: $DEFCONFIG"
     make O=out ARCH=arm "$DEFCONFIG"
     
-    echo "Building kernel with ${NJOBS:-$(nproc)} jobs..."
+    echo "Building kernel..."
     make -j${NJOBS:-$(nproc)} O=out ARCH=arm 2>&1 | tee build.log
     
-    # Сохраняем информацию о компиляторе
     arm-eabi-gcc --version > "${maindir}/${toolchain}.info" 2>&1
     
-    # Проверяем результат
     if [ -f out/arch/arm/boot/zImage ]; then
       export out_image="${maindir}/kernel/out/arch/arm/boot/zImage"
       export out_dtb="${maindir}/kernel/out/arch/arm/boot/dt.img"
-      echo "Build successful: $out_image"
+      echo "Build successful!"
+      ls -lh out/arch/arm/boot/zImage
     else
-      echo "Build failed: zImage not found"
+      echo "Build failed!"
       exit 1
     fi
     ;;
