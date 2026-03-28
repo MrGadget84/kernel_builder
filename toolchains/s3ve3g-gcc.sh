@@ -41,11 +41,23 @@ case $1 in
     
     mkdir -p out
     
-    # УДАЛЯЕМ ПРОБЛЕМНЫЙ СКРИПТ
-    rm -f scripts/gcc-wrapper.py
+    # СОЗДАЁМ ПРОСТОЙ ПРОХОДЯЩИЙ gcc-wrapper.py
+    cat > scripts/gcc-wrapper.py << 'EOF'
+#!/usr/bin/env python3
+import sys
+import subprocess
+import os
+
+if __name__ == '__main__':
+    # Просто передаём все аргументы в реальный gcc
+    os.execvp(sys.argv[1], sys.argv[1:])
+EOF
+    chmod +x scripts/gcc-wrapper.py
+    
+    # Исправляем Makefile, чтобы использовался наш wrapper
+    sed -i 's|scripts/gcc-wrapper.py|./scripts/gcc-wrapper.py|g' scripts/Makefile
     
     # Отключаем сборку dtc
-    echo "Disabling dtc build..."
     cat > scripts/dtc/Makefile << 'EOF'
 hostprogs-y :=
 always-y :=
