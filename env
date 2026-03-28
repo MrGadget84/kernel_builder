@@ -7,8 +7,6 @@ export outside="${maindir}/.."
 
 #
 
-mkdir -p out
-make O=out
 export ARCH="arm"
 export SUBARCH="arm"
 export KBUILD_BUILD_USER="MrGadget84"
