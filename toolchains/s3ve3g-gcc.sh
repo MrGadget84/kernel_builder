@@ -41,32 +41,20 @@ case $1 in
     
     mkdir -p out
     
-    # Исправляем gcc-wrapper.py
-    if [ -f scripts/gcc-wrapper.py ]; then
-      sed -i 's/print "\(.*\)"/print("\1")/g' scripts/gcc-wrapper.py
-      sed -i 's/print \(.*\),/print(\1, end=" ")/g' scripts/gcc-wrapper.py
-    fi
+    # УДАЛЯЕМ ПРОБЛЕМНЫЙ СКРИПТ
+    rm -f scripts/gcc-wrapper.py
     
-    # ПОЛНОСТЬЮ ОТКЛЮЧАЕМ СБОРКУ DTC
-    echo "Disabling dtc build in kernel..."
+    # Отключаем сборку dtc
+    echo "Disabling dtc build..."
     cat > scripts/dtc/Makefile << 'EOF'
-# Empty Makefile - dtc is provided by system
 hostprogs-y :=
 always-y :=
 clean-files :=
 EOF
     
-    # Создаём пустой dtc в output чтобы не было ошибок
+    # Создаём симлинк на системный dtc
     mkdir -p out/scripts/dtc
-    touch out/scripts/dtc/dtc
-    chmod +x out/scripts/dtc/dtc
-    
-    # Ищем системный dtc и создаём симлинк
-    DTC_PATH=$(find /usr -name dtc -type f 2>/dev/null | head -1)
-    if [ -n "$DTC_PATH" ]; then
-      ln -sf "$DTC_PATH" out/scripts/dtc/dtc
-      echo "Using system dtc: $DTC_PATH"
-    fi
+    ln -sf /usr/bin/dtc out/scripts/dtc/dtc
     
     DEFCONFIG="$2"
     if [ -z "$DEFCONFIG" ]; then
