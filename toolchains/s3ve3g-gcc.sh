@@ -41,11 +41,8 @@ case $1 in
     
     mkdir -p out
     
-    # Устанавливаем dtc если нет
-    if ! command -v dtc &> /dev/null; then
-      echo "Installing dtc..."
-      dnf install -y dtc
-    fi
+    # Устанавливаем dtc
+    dnf install -y dtc
     
     # Исправляем gcc-wrapper.py
     if [ -f scripts/gcc-wrapper.py ]; then
@@ -53,27 +50,13 @@ case $1 in
       sed -i 's/print \(.*\),/print(\1, end=" ")/g' scripts/gcc-wrapper.py
     fi
     
-    # Отключаем сборку dtc, используем системный
-    echo "Using system dtc"
-    cat > scripts/dtc/Makefile << 'EOF'
-hostprogs-y := dtc
-always-y := $(hostprogs-y)
-
-dtc-objs := dtc.o flattree.o fstree.o data.o livetree.o treesource.o srcpos.o util.o
-dtc-objs += dtc-lexer.lex.o dtc-parser.tab.o
-
-HOSTCFLAGS_dtc-lexer.lex.o := -I$(srctree)/scripts/dtc/libfdt
-HOSTCFLAGS_dtc-parser.tab.o := -I$(srctree)/scripts/dtc/libfdt
-
-$(obj)/dtc: $(addprefix $(obj)/,$(dtc-objs)) $(obj)/libfdt/libfdt.a
-	$(HOSTCC) -o $@ $^
-
-clean-files := dtc-lexer.lex.c dtc-parser.tab.c dtc-parser.tab.h
-EOF
-    
-    # Копируем системный dtc в output
-    mkdir -p out/scripts/dtc
-    cp $(which dtc) out/scripts/dtc/dtc
+    # Копируем dtc в нужное место
+    DTC_PATH=$(find /usr -name dtc -type f 2>/dev/null | head -1)
+    if [ -n "$DTC_PATH" ]; then
+      mkdir -p out/scripts/dtc
+      cp "$DTC_PATH" out/scripts/dtc/dtc
+      echo "dtc copied from $DTC_PATH"
+    fi
     
     DEFCONFIG="$2"
     if [ -z "$DEFCONFIG" ]; then
