@@ -35,36 +35,38 @@ case $1 in
     export CROSS_COMPILE=arm-eabi-
     export PATH="/opt/gcc-4.9.3/bin:$PATH"
     
+    # Принудительно ARM-режим (исправляет ошибки Thumb)
+    export CFLAGS="-marm"
+    export AFLAGS="-marm"
+    
     cd "${maindir}"
     
     echo "Building in: $(pwd)"
     
     mkdir -p out
     
-    # СОЗДАЁМ ПРОСТОЙ ПРОХОДЯЩИЙ gcc-wrapper.py
+    # Создаём обёртку для gcc (прокси)
     cat > scripts/gcc-wrapper.py << 'EOF'
 #!/usr/bin/env python3
 import sys
-import subprocess
 import os
 
 if __name__ == '__main__':
-    # Просто передаём все аргументы в реальный gcc
     os.execvp(sys.argv[1], sys.argv[1:])
 EOF
     chmod +x scripts/gcc-wrapper.py
     
-    # Исправляем Makefile, чтобы использовался наш wrapper
+    # Заменяем ссылку на wrapper в Makefile
     sed -i 's|scripts/gcc-wrapper.py|./scripts/gcc-wrapper.py|g' scripts/Makefile
     
-    # Отключаем сборку dtc
+    # Отключаем сборку dtc (используем системный)
     cat > scripts/dtc/Makefile << 'EOF'
 hostprogs-y :=
 always-y :=
 clean-files :=
 EOF
     
-    # Создаём симлинк на системный dtc
+    # Создаём симлинк на системный dtc в output
     mkdir -p out/scripts/dtc
     ln -sf /usr/bin/dtc out/scripts/dtc/dtc
     
