@@ -17,7 +17,6 @@ case $1 in
     
     sudo tar -xf "$TARBALL" -C "$INSTALL_DIR" --strip-components=1
     
-    # Создаём симлинки для всех утилит
     cd "$INSTALL_DIR/bin"
     for tool in arm-linux-gnueabihf-*; do
       new_tool="${tool/arm-linux-gnueabihf/arm-eabi}"
@@ -49,13 +48,25 @@ case $1 in
       sed -i 's/print \(.*\),/print(\1, end=" ")/g' scripts/gcc-wrapper.py
     fi
     
-    # Исправляем dtc
+    # ПОЛНОЕ ИСПРАВЛЕНИЕ DTC
     echo "Fixing dtc yylloc issue..."
     if [ -f scripts/dtc/dtc-lexer.l ]; then
-      sed -i 's/extern YYLTYPE yylloc;/YYLTYPE yylloc;/' scripts/dtc/dtc-lexer.l
+      # Удаляем extern объявления в обоих файлах
+      sed -i 's/extern YYLTYPE yylloc;//' scripts/dtc/dtc-lexer.l
+      sed -i 's/extern YYLTYPE yylloc;//' scripts/dtc/dtc-parser.y
+      
+      # Добавляем определение в lexer
+      sed -i '/^#include "dtc.h"/a YYLTYPE yylloc;' scripts/dtc/dtc-lexer.l
+      
+      # Удаляем старые сгенерированные файлы
+      rm -f scripts/dtc/dtc-lexer.lex.c
+      rm -f scripts/dtc/dtc-parser.tab.c
+      rm -f scripts/dtc/dtc-parser.tab.h
+      
+      # Перегенерируем
       cd scripts/dtc
-      flex -o dtc-lexer.lex.c dtc-lexer.l 2>/dev/null || true
-      bison -o dtc-parser.tab.c dtc-parser.y 2>/dev/null || true
+      flex -o dtc-lexer.lex.c dtc-lexer.l
+      bison -o dtc-parser.tab.c dtc-parser.y
       cd ../..
     fi
     
@@ -95,4 +106,5 @@ case $1 in
     echo "Usage: $0 {setup|build} [defconfig]"
     exit 1
     ;;
+esac
 esac
