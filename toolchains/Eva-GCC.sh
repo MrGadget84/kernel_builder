@@ -22,19 +22,20 @@ case $1 in
   ;;
 
   "build" )
-    export PATH="${GCC64}/bin:${GCC32}/bin:/usr/bin:${PATH}"
-    make -j$NJOBS O=out ARCH=arm64 SUBARCH=arm64 $2
+    export PATH="${GCC32}/bin:/usr/bin:${PATH}"
+    make -j$NJOBS O=out ARCH=arm SUBARCH=arm $2
     make -j$NJOBS O=out \
-      CROSS_COMPILE=aarch64-elf- \
-      CROSS_COMPILE_COMPAT=arm-eabi- \
-      LD="${GCC64}"/bin/aarch64-elf-ld.lld \
-      AR=aarch64-elf-ar \
-      AS=aarch64-elf-as \
-      NM=aarch64-elf-nm \
-      OBJDUMP=aarch64-elf-objdump \
-      OBJCOPY=aarch64-elf-objcopy \
-      CC=aarch64-elf-gcc \
+      make -j$NJOBS O=out \
+      ARCH=arm \
+      CROSS_COMPILE=arm-eabi- \
+      CC=arm-eabi-gcc \
+      LD=arm-eabi-ld \
+      AR=arm-eabi-ar \
+      NM=arm-eabi-nm \
+      OBJCOPY=arm-eabi-objcopy \
+      OBJDUMP=arm-eabi-objdump \
+      STRIP=arm-eabi-strip \
       2>&1 | tee ${CUR_TOOLCHAIN}.log
-    sh ${outside}/ver_toolchain.sh aarch64-elf-gcc aarch64-elf-ld.lld > ${CUR_TOOLCHAIN}.info
+    sh ${outside}/ver_toolchain.sh arm-eabi-gcc --version | head -n 1 > ${CUR_TOOLCHAIN}.info
   ;;
 esac
