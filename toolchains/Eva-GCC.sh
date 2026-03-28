@@ -22,19 +22,18 @@ case $1 in
   ;;
 
   "build" )
-    export PATH="${GCC32}/bin:/usr/bin:${PATH}"
-    mkdir -p out
+    export PATH="$${GCC32}/bin:/usr/bin:${PATH}"
     make -j$NJOBS O=out ARCH=arm SUBARCH=arm $2
-      ARCH=arm \
+    make -j$NJOBS O=out \
       CROSS_COMPILE=arm-eabi- \
-      CC=arm-eabi-gcc \
-      LD=arm-eabi-ld \
+      LD="${GCC64}"/bin/arm-eabi-ld.lld \
       AR=arm-eabi-ar \
+      AS=arm-eabi-as \
       NM=arm-eabi-nm \
-      OBJCOPY=arm-eabi-objcopy \
       OBJDUMP=arm-eabi-objdump \
-      STRIP=arm-eabi-strip \
+      OBJCOPY=arm-eabi-objcopy \
+      CC=arm-eabi-gcc \
       2>&1 | tee ${CUR_TOOLCHAIN}.log
-    sh ${outside}/ver_toolchain.sh arm-eabi-gcc --version | head -n 1 > ${CUR_TOOLCHAIN}.info
+    sh ${outside}/ver_toolchain.sh arm-eabi-gcc arm-eabi-ld.lld > ${CUR_TOOLCHAIN}.info
   ;;
 esac
