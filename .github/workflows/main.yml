@@ -16,15 +16,15 @@ on: # [push]
       COMPILER:
         description: 'compilers used'
         required: true
-        default: 'Eva-GCC'
+        default: 'shattered-Clang-15'
       KREPO:
         description: 'kernel repo'
         required: true
-        default: 'https://github.com/MrGadget84/white_kernel_samsung_s3ve3g'
+        default: 'https://github.com/MrGadget84/white_kernel_xiaomi_blossom'
       KBRANCH:
         description: 'kernel branch'
         required: true
-        default: 'cm-12.1'
+        default: 'infinity'
       NOTES:
         description: 'notes to print out'
         required: false
@@ -36,15 +36,15 @@ on: # [push]
       ZREPO:
         description: 'zipper repo'
         required: true
-        default: 'https://github.com/MrGadget84/AnyKernel3_s3ve3g'
+        default: 'https://github.com/MrGadget84/AnyKernel3_blossom'
       ZBRANCH:
         description: 'zipper branch'
         required: true
-        default: 'master'
+        default: 'main'
       KSU:
         description: 'if dont want ksu then leave blank'
         required: false
-        default: ''
+        default: 'both'
       TG_RECIPENT:
         description: 'group id'
         required: true
@@ -91,12 +91,9 @@ jobs:
           run: |
             dnf group install development-tools -y
             dnf install llvm lld bc bison ca-certificates curl flex glibc-devel.i686 glibc-devel binutils-devel openssl python3 python2 zstd clang gcc-arm-linux-gnu dtc libxml2 libarchive openssl-devel perl tomsfastmath-devel wget xz -y
-            echo "HOSTCFLAGS=-fcommon" >> $GITHUB_ENV
-            echo "HOSTCXXFLAGS=-fcommon" >> $GITHUB_ENV
-            ln -sf "/usr/bin/python2" /usr/bin/python
+            ln -sf "/usr/bin/python3" /usr/bin/python
             git config --global user.name "John Doe"
             git config --global user.email "idk@example.com"
-
         - name: show host info
           run: |
             if [ ! -z "$VERBOSE" ]; then
@@ -180,4 +177,3 @@ jobs:
             WORKFLOW_END=$(date +"%s")
             WDIFF=$((WORKFLOW_END - WORKFLOW_START))
             bash tg_utils.sh msg "gh $RUN_NUM: workflow ended in $((WDIFF / 60))m, $((WDIFF % 60))s"
-
