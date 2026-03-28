@@ -35,9 +35,9 @@ case $1 in
     export CROSS_COMPILE=arm-eabi-
     export PATH="/opt/gcc-4.9.3/bin:$PATH"
     
-    # Принудительно ARM-режим (исправляет ошибки Thumb)
-    export CFLAGS="-marm"
-    export AFLAGS="-marm"
+    # Принудительно ARM-режим, запрещаем Thumb
+    export CFLAGS="-marm -Wa,-marm"
+    export AFLAGS="-marm -Wa,-marm"
     
     cd "${maindir}"
     
