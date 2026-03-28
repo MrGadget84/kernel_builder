@@ -1,5 +1,5 @@
 #!/bin/bash
-# toolchains/gcc-4.9.3.sh
+# toolchains/s3ve3g-gcc.sh
 
 set -e
 
@@ -17,10 +17,13 @@ case $1 in
     
     sudo tar -xf "$TARBALL" -C "$INSTALL_DIR" --strip-components=1
     
-    sudo ln -sf "$INSTALL_DIR/bin/arm-linux-gnueabihf-gcc" "$INSTALL_DIR/bin/arm-eabi-gcc"
-    sudo ln -sf "$INSTALL_DIR/bin/arm-linux-gnueabihf-g++" "$INSTALL_DIR/bin/arm-eabi-g++"
-    sudo ln -sf "$INSTALL_DIR/bin/arm-linux-gnueabihf-ld" "$INSTALL_DIR/bin/arm-eabi-ld"
-    sudo ln -sf "$INSTALL_DIR/bin/arm-linux-gnueabihf-ar" "$INSTALL_DIR/bin/arm-eabi-ar"
+    # Создаём симлинки для всех утилит
+    cd "$INSTALL_DIR/bin"
+    for tool in arm-linux-gnueabihf-*; do
+      new_tool="${tool/arm-linux-gnueabihf/arm-eabi}"
+      sudo ln -sf "$tool" "$new_tool"
+    done
+    cd -
     
     export PATH="$INSTALL_DIR/bin:$PATH"
     echo "GCC installed:"
@@ -33,12 +36,10 @@ case $1 in
     export CROSS_COMPILE=arm-eabi-
     export PATH="/opt/gcc-4.9.3/bin:$PATH"
     
-    # Переходим в папку ядра
     cd "${maindir}"
     
     echo "Building in: $(pwd)"
     
-    # Создаём директорию out
     mkdir -p out
     
     # Исправляем gcc-wrapper.py
@@ -46,8 +47,16 @@ case $1 in
       echo "Fixing gcc-wrapper.py for Python 3..."
       sed -i 's/print "\(.*\)"/print("\1")/g' scripts/gcc-wrapper.py
       sed -i 's/print \(.*\),/print(\1, end=" ")/g' scripts/gcc-wrapper.py
-      sed -i "s/print '\(.*\)'/print('\1')/g" scripts/gcc-wrapper.py
-      sed -i 's/print line,/print(line.decode("utf-8"), end="")/g' scripts/gcc-wrapper.py
+    fi
+    
+    # Исправляем dtc
+    echo "Fixing dtc yylloc issue..."
+    if [ -f scripts/dtc/dtc-lexer.l ]; then
+      sed -i 's/extern YYLTYPE yylloc;/YYLTYPE yylloc;/' scripts/dtc/dtc-lexer.l
+      cd scripts/dtc
+      flex -o dtc-lexer.lex.c dtc-lexer.l 2>/dev/null || true
+      bison -o dtc-parser.tab.c dtc-parser.y 2>/dev/null || true
+      cd ../..
     fi
     
     DEFCONFIG="$2"
@@ -64,17 +73,13 @@ case $1 in
       exit 1
     fi
     
-    # Конфигурация
     make O=out ARCH=arm "$DEFCONFIG"
     
-    # Сборка
     echo "Building kernel with ${NJOBS:-$(nproc)} jobs..."
     make -j${NJOBS:-$(nproc)} O=out ARCH=arm 2>&1 | tee build.log
     
-    # Сохраняем информацию о компиляторе
     arm-eabi-gcc --version > "${maindir}/${toolchain}.info" 2>&1
     
-    # Проверяем результат
     if [ -f out/arch/arm/boot/zImage ]; then
       export out_image="${maindir}/out/arch/arm/boot/zImage"
       export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
