@@ -5,12 +5,6 @@
 export maindir="$(pwd)"
 export outside="${maindir}/.."
 source "${outside}/$2env"
-export HOSTCFLAGS="-fcommon"
-export HOSTCXXFLAGS="-fcommon"
-find . -name "Makefile*" -type f -exec sed -i 's/-mno-thumb-interwork//g' {} +
-mkdir -p out
-make O=out ARCH=arm $defconfig
-
 
 [ -z "$NJOBS" ] && export NJOBS=$(nproc --all) || :
 
@@ -45,8 +39,6 @@ pack() {
 }
 
 # build
-mkdir -p out
-make O=out ARCH=arm $defconfig
 for toolchain in $1; do
   #rm -rf out
 
