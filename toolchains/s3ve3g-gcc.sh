@@ -35,10 +35,6 @@ case $1 in
     export CROSS_COMPILE=arm-eabi-
     export PATH="/opt/gcc-4.9.3/bin:$PATH"
     
-    # Принудительно ARM-режим, запрещаем Thumb
-    export CFLAGS="-marm -Wa,-marm"
-    export AFLAGS="-marm -Wa,-marm"
-    
     cd "${maindir}"
     
     echo "Building in: $(pwd)"
@@ -55,8 +51,6 @@ if __name__ == '__main__':
     os.execvp(sys.argv[1], sys.argv[1:])
 EOF
     chmod +x scripts/gcc-wrapper.py
-    
-    # Заменяем ссылку на wrapper в Makefile
     sed -i 's|scripts/gcc-wrapper.py|./scripts/gcc-wrapper.py|g' scripts/Makefile
     
     # Отключаем сборку dtc (используем системный)
@@ -65,8 +59,6 @@ hostprogs-y :=
 always-y :=
 clean-files :=
 EOF
-    
-    # Создаём симлинк на системный dtc в output
     mkdir -p out/scripts/dtc
     ln -sf /usr/bin/dtc out/scripts/dtc/dtc
     
@@ -84,6 +76,14 @@ EOF
     fi
     
     make O=out ARCH=arm "$DEFCONFIG"
+    
+    # Отключаем проблемные криптографические модули
+    echo "Disabling ARM crypto modules that cause Thumb errors..."
+    scripts/config --file out/.config --disable CRYPTO_AES_ARM_BS
+    scripts/config --file out/.config --disable CRYPTO_AES_ARM
+    scripts/config --file out/.config --disable CRYPTO_SHA1_ARM_NEON
+    scripts/config --file out/.config --disable CRYPTO_SHA1_ARM
+    scripts/config --file out/.config --disable CRYPTO_SHA256_ARM
     
     echo "Building kernel with ${NJOBS:-4} jobs..."
     make -j${NJOBS:-4} O=out ARCH=arm 2>&1 | tee build.log
