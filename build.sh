@@ -5,7 +5,6 @@
 export maindir="$(pwd)"
 export outside="${maindir}/.."
 source "${outside}/$2env"
-mkdir -p out
 
 [ -z "$NJOBS" ] && export NJOBS=$(nproc --all) || :
 
@@ -40,6 +39,8 @@ pack() {
 }
 
 # build
+mkdir -p out
+make O=out ARCH=arm $defconfig
 for toolchain in $1; do
   #rm -rf out
 
