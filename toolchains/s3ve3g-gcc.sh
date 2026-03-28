@@ -41,23 +41,39 @@ case $1 in
     
     mkdir -p out
     
+    # Устанавливаем dtc если нет
+    if ! command -v dtc &> /dev/null; then
+      echo "Installing dtc..."
+      dnf install -y dtc
+    fi
+    
     # Исправляем gcc-wrapper.py
     if [ -f scripts/gcc-wrapper.py ]; then
       sed -i 's/print "\(.*\)"/print("\1")/g' scripts/gcc-wrapper.py
       sed -i 's/print \(.*\),/print(\1, end=" ")/g' scripts/gcc-wrapper.py
     fi
     
-    # ПРОСТО КОПИРУЕМ ГОТОВЫЙ dtc ИЗ СИСТЕМЫ
-    echo "Using system dtc instead of building..."
-    if command -v dtc &> /dev/null; then
-      mkdir -p scripts/dtc
-      cp $(which dtc) scripts/dtc/dtc 2>/dev/null || true
-    fi
+    # Отключаем сборку dtc, используем системный
+    echo "Using system dtc"
+    cat > scripts/dtc/Makefile << 'EOF'
+hostprogs-y := dtc
+always-y := $(hostprogs-y)
+
+dtc-objs := dtc.o flattree.o fstree.o data.o livetree.o treesource.o srcpos.o util.o
+dtc-objs += dtc-lexer.lex.o dtc-parser.tab.o
+
+HOSTCFLAGS_dtc-lexer.lex.o := -I$(srctree)/scripts/dtc/libfdt
+HOSTCFLAGS_dtc-parser.tab.o := -I$(srctree)/scripts/dtc/libfdt
+
+$(obj)/dtc: $(addprefix $(obj)/,$(dtc-objs)) $(obj)/libfdt/libfdt.a
+	$(HOSTCC) -o $@ $^
+
+clean-files := dtc-lexer.lex.c dtc-parser.tab.c dtc-parser.tab.h
+EOF
     
-    # ИЛИ ПРОСТО ОТКЛЮЧАЕМ СБОРКУ dtc
-    echo "Disabling dtc build..."
-    sed -i 's/^hostprogs-.*/hostprogs-$(CONFIG_DTC) :=/' scripts/dtc/Makefile
-    sed -i 's/^always.*/always-$(CONFIG_DTC) :=/' scripts/dtc/Makefile
+    # Копируем системный dtc в output
+    mkdir -p out/scripts/dtc
+    cp $(which dtc) out/scripts/dtc/dtc
     
     DEFCONFIG="$2"
     if [ -z "$DEFCONFIG" ]; then
