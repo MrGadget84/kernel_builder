@@ -7,6 +7,7 @@ export outside="${maindir}/.."
 
 #
 
+mkdir -p out
 make O=out
 export ARCH="arm"
 export SUBARCH="arm"
