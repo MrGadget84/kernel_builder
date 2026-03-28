@@ -16,15 +16,15 @@ on: # [push]
       COMPILER:
         description: 'compilers used'
         required: true
-        default: 'shattered-Clang-15'
+        default: 'gcc-4.9.3'
       KREPO:
         description: 'kernel repo'
         required: true
-        default: 'https://github.com/MrGadget84/white_kernel_xiaomi_blossom'
+        default: 'https://github.com/MrGadget84/white_kernel_samsung_s3ve3g'
       KBRANCH:
         description: 'kernel branch'
         required: true
-        default: 'infinity'
+        default: 'cm-12.1'
       NOTES:
         description: 'notes to print out'
         required: false
@@ -36,7 +36,7 @@ on: # [push]
       ZREPO:
         description: 'zipper repo'
         required: true
-        default: 'https://github.com/MrGadget84/AnyKernel3_blossom'
+        default: 'https://github.com/MrGadget84/AnyKernel3_s3ve3g'
       ZBRANCH:
         description: 'zipper branch'
         required: true
