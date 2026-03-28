@@ -16,7 +16,7 @@ on: # [push]
       COMPILER:
         description: 'compilers used'
         required: true
-        default: 'Eva-GCC-12'
+        default: 'Eva-GCC'
       KREPO:
         description: 'kernel repo'
         required: true
@@ -40,7 +40,7 @@ on: # [push]
       ZBRANCH:
         description: 'zipper branch'
         required: true
-        default: 'main'
+        default: 'master'
       KSU:
         description: 'if dont want ksu then leave blank'
         required: false
