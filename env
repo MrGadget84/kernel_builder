@@ -7,23 +7,23 @@ export outside="${maindir}/.."
 
 #
 
-export ARCH="arm64"
-export SUBARCH="arm64"
+export ARCH="arm"
+export SUBARCH="arm"
 export KBUILD_BUILD_USER="MrGadget84"
 export KBUILD_BUILD_HOST="github"
 
 export defconfig="blossom_defconfig"
 
 if [[ -z "$zipper_repo" ]]; then
-  export zipper_repo="https://github.com/MrGadget84/AnyKernel3_blossom"
+  export zipper_repo="https://github.com/MrGadget84/AnyKernel3_s3ve3g"
 fi
 if [[ -z "$zipper_branch" ]]; then
   export zipper_branch=main
 fi
 
-export out_image="${maindir}/out/arch/${ARCH}/boot/Image.gz"
-export out_dtb="${maindir}/out/arch/${ARCH}/boot/dts/mediatek/mt6765.dtb"
-export out_dtbo="${maindir}/out/arch/${ARCH}/boot/dtbo.img"
+export out_image="${maindir}/out/arch/${ARCH}/boot/zImage"
+# export out_dtb="${maindir}/out/arch/${ARCH}/boot/dts/mediatek/mt6765.dtb"
+# export out_dtbo="${maindir}/out/arch/${ARCH}/boot/dtbo.img"
 
 export zipper="${outside}/zipper"
 
