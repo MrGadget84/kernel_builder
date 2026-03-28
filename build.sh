@@ -2,10 +2,10 @@
 #
 # idk lmao
 
-mkdir -p out
 export maindir="$(pwd)"
 export outside="${maindir}/.."
 source "${outside}/$2env"
+mkdir -p out
 
 [ -z "$NJOBS" ] && export NJOBS=$(nproc --all) || :
 
