@@ -23,6 +23,7 @@ case $1 in
 
   "build" )
     export PATH="${GCC32}/bin:/usr/bin:${PATH}"
+    mkdir -p out
     make -j$NJOBS O=out ARCH=arm SUBARCH=arm $2
     make -j$NJOBS O=out \
       make -j$NJOBS O=out \
