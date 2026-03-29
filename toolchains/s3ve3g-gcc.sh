@@ -92,15 +92,20 @@ EOF
     make -j${NJOBS:-4} O=out ARCH=arm 2>&1 | tee build.log
     
     if [ -f out/arch/arm/boot/zImage-dtb ]; then
-      export out_image="${maindir}/out/arch/arm/boot/zImage-dtb"
-      export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
-      echo "Build successful!"
-      ls -lh out/arch/arm/boot/zImage-dtb
-    else
-      echo "Build failed!"
-      exit 1
-    fi
-    ;;
+  export out_image="${maindir}/out/arch/arm/boot/zImage-dtb"
+  export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
+  echo "Build successful (zImage-dtb)!"
+  ls -lh out/arch/arm/boot/zImage-dtb
+elif [ -f out/arch/arm/boot/zImage ]; then
+  export out_image="${maindir}/out/arch/arm/boot/zImage"
+  export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
+  echo "Build successful (zImage)!"
+  ls -lh out/arch/arm/boot/zImage
+else
+  echo "Build failed: no kernel image found!"
+  exit 1
+fi
+;;
     
   * )
     echo "Usage: $0 {setup|build} [defconfig]"
