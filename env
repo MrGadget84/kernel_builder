@@ -21,10 +21,10 @@ if [[ -z "$zipper_branch" ]]; then
   export zipper_branch=main
 fi
 
-export out_image="${maindir}/out/arch/${ARCH}/boot/zImage-dtb"
-# export out_dtb="${maindir}/out/arch/${ARCH}/boot/dts/mediatek/mt6765.dtb"
-export out_dtbo="${maindir}/out/arch/${ARCH}/boot/dtbo.img"
-export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
+export out_image="${maindir}/out/arch/${ARCH}/boot/zImage"
+export out_dtb="${maindir}/out/arch/${ARCH}/boot/msm8226-sec-s3ve3geur-r04.dtb"
+# export out_dtbo="${maindir}/out/arch/${ARCH}/boot/dtbo.img"
+# export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
 
 export zipper="${outside}/zipper"
 
