@@ -91,7 +91,7 @@ EOF
     echo "Building kernel with ${NJOBS:-4} jobs..."
     make -j${NJOBS:-4} O=out ARCH=arm 2>&1 | tee build.log
     
-    if [ -f out/arch/arm/boot/zImage ]; then
+    if [ -f out/arch/arm/boot/zImage-dtb ]; then
       export out_image="${maindir}/out/arch/arm/boot/zImage-dtb"
       echo "Build successful!"
       ls -lh out/arch/arm/boot/zImage-dtb
