@@ -91,55 +91,13 @@ EOF
     echo "Building kernel with ${NJOBS:-4} jobs..."
     make -j${NJOBS:-4} O=out ARCH=arm 2>&1 | tee build.log
     
-    if [ -f out/arch/arm/boot/zImage-dtb ]; then
+    if [ -f out/arch/arm/boot/zImage ]; then
       export out_image="${maindir}/out/arch/arm/boot/zImage-dtb"
-      export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
-      echo "Build successful (zImage-dtb)!"
+      echo "Build successful!"
       ls -lh out/arch/arm/boot/zImage-dtb
-    elif [ -f out/arch/arm/boot/zImage ]; then
-      export out_image="${maindir}/out/arch/arm/boot/zImage"
-      export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
-      echo "Build successful (zImage)!"
-      ls -lh out/arch/arm/boot/zImage
     else
-      echo "Build failed: no kernel image found!"
+      echo "Build failed!"
       exit 1
-    fi
-    
-    # Упаковка с AnyKernel3 (если заданы репозиторий и ветка)
-    if [ -n "$zipper_repo" ] && [ -n "$zipper_branch" ]; then
-        echo "Cloning AnyKernel3 from $zipper_repo (branch $zipper_branch)..."
-        git clone --depth=1 --single-branch "$zipper_repo" -b "$zipper_branch" ../anykernel
-        
-        # Копируем образы
-        cp "$out_image" ../anykernel/zImage
-        if [ -f "$out_dtb" ]; then
-            cp "$out_dtb" ../anykernel/dtb
-        fi
-        
-        # Если нужно, можно скопировать модули (если они собираются)
-        # find out -name "*.ko" -exec cp {} ../anykernel/modules/ \;
-        
-        cd ../anykernel
-        
-        # Запуск скрипта упаковки (название может отличаться)
-        if [ -f build.sh ]; then
-            bash build.sh
-        elif [ -f make_zip.sh ]; then
-            bash make_zip.sh
-        elif [ -f anykernel.sh ]; then
-            bash anykernel.sh
-        else
-            echo "No packaging script found in AnyKernel3"
-            exit 1
-        fi
-        
-        # Копируем готовый ZIP обратно в каталог kernel (для последующей отправки)
-        cp *.zip ../kernel/
-        cd ../kernel
-    else
-        echo "No AnyKernel3 repository specified, skipping packaging"
-        exit 1
     fi
     ;;
     
