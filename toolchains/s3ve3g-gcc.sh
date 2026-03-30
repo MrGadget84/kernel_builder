@@ -93,6 +93,7 @@ EOF
     
     if [ -f out/arch/arm/boot/zImage-dtb ]; then
       export out_image="${maindir}/out/arch/arm/boot/zImage-dtb"
+      export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
       echo "Build successful!"
       ls -lh out/arch/arm/boot/zImage-dtb
     else
