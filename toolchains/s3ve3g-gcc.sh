@@ -94,7 +94,7 @@ EOF
     if [ -f out/arch/arm/boot/zImage ]; then
       export out_image="${maindir}/out/arch/arm/boot/zImage"
      # export out_dtb="${maindir}/out/arch/arm/boot/dt.img"
-      export out_dtb="${maindir}/out/arch/${ARCH}/boot/msm8226-sec-s3ve3g-eur-r04.dtb"
+      export out_dtb="${maindir}/out/arch/${ARCH}/boot/msm8226-sec-s3ve3geur-r04.dtb"
       echo "Build successful!"
       ls -lh out/arch/arm/boot/zImage
     else
