@@ -81,12 +81,12 @@ EOF
     make O=out ARCH=arm "$DEFCONFIG"
     
     # Отключаем проблемные криптомодули
-    echo "Disabling ARM crypto modules that cause Thumb errors..."
-    scripts/config --file out/.config --disable CRYPTO_AES_ARM_BS
-    scripts/config --file out/.config --disable CRYPTO_AES_ARM
-    scripts/config --file out/.config --disable CRYPTO_SHA1_ARM_NEON
-    scripts/config --file out/.config --disable CRYPTO_SHA1_ARM
-    scripts/config --file out/.config --disable CRYPTO_SHA256_ARM
+    # echo "Disabling ARM crypto modules that cause Thumb errors..."
+    # scripts/config --file out/.config --disable CRYPTO_AES_ARM_BS
+    # scripts/config --file out/.config --disable CRYPTO_AES_ARM
+    # scripts/config --file out/.config --disable CRYPTO_SHA1_ARM_NEON
+    # scripts/config --file out/.config --disable CRYPTO_SHA1_ARM
+    # scripts/config --file out/.config --disable CRYPTO_SHA256_ARM
     
     echo "Building kernel with ${NJOBS:-4} jobs..."
     make -j${NJOBS:-4} O=out ARCH=arm 2>&1 | tee build.log
