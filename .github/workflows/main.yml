@@ -152,7 +152,7 @@ jobs:
             esac
         - name: Manual DTB Append
           run: |
-            cd out/arch/arm/boot/
+            cd kernel/out/arch/arm/boot/
             cat zImage dts/msm8226-sec-s3ve3geur-r04.dtb > zImage-dtb
             cp zImage-dtb zImage
 
