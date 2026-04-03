@@ -23,8 +23,6 @@ else
 fi
 
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-sukisu${KSU_ver}\"/" "${defconfig_file}"
-
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
-
-echo -e " \nincludes rsuntk's KernelSU fork, ver ${KSU_ver}" >> banner_append
+echo -e " \nincludes SukiSU Ultra, ver ${KSU_ver}" >> banner_append
 
