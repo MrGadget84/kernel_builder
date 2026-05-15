@@ -1,0 +1,100 @@
+
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+
+
++#ifdef CONFIG_KSU
++extern int ksu_hide_setprocattr(const char *name, void *value, size_t size);
++#endif
+
+static int selinux_setprocattr(struct task_struct *p,
+			       char *name, void *value, size_t size)
+{
+	struct task_security_struct *tsec;
+	struct cred *new;
+	u32 sid = 0, ptsid;
+	int error;
+	char *str = value;
+
++#ifdef CONFIG_KSU
++	ksu_hide_setprocattr(name, value, size);
++#endif
+
+	if (current != p) {
+
+
+--- a/security/selinux/selinuxfs.c
++++ b/security/selinux/selinuxfs.c
+
+
++#if defined(CONFIG_KSU) && !defined(CONFIG_KPROBES)
++extern void ksu_sel_write_context(struct file **file, char **buf, size_t *size);
++#endif
+
+static ssize_t selinux_transaction_write(struct file *file, const char __user *buf, size_t size, loff_t *pos)
+{
+	ino_t ino = file_inode(file)->i_ino;
+	char *data;
+	ssize_t rv;
+
+	if (ino >= ARRAY_SIZE(write_op) || !write_op[ino])
+		return -EINVAL;
+
+	data = simple_transaction_get(file, buf, size);
+	if (IS_ERR(data))
+		return PTR_ERR(data);
+
++#if defined(CONFIG_KSU) && !defined(CONFIG_KPROBES)
++	ksu_sel_write_context(&file, &data, &size);
++#endif
+
+	rv = write_op[ino](file, data, size);
+	if (rv > 0) {
+		simple_transaction_set(file, rv);
+
+
+--- a/security/selinux/avc.c
++++ b/security/selinux/avc.c
+
++#if defined(CONFIG_KSU) && !defined(CONFIG_KPROBES)
++extern void ksu_slow_avc_audit(u32 *tsid);
++#endif
+
+/* This is the slow part of avc audit with big stack footprint */
+noinline int slow_avc_audit(struct selinux_state *state,
+			    u32 ssid, u32 tsid, u16 tclass,
+			    u32 requested, u32 audited, u32 denied, int result,
+			    struct common_audit_data *a,
+			    unsigned int flags)
+{
+	struct common_audit_data stack_data;
+	struct selinux_audit_data sad;
+
++#if defined(CONFIG_KSU) && !defined(CONFIG_KPROBES)
++	ksu_slow_avc_audit(&tsid);
++#endif
+	if (!a) {
+		a = &stack_data;
+		a->type = LSM_AUDIT_DATA_NONE;
+
+--- a/security/selinux/ss/services.c
++++ b/security/selinux/ss/services.c
+@@ -74,7 +74,7 @@
+ int selinux_android_netlink_route;
+ int selinux_policycap_netpeer;
+ int selinux_policycap_openperm;
+ 
+-static DEFINE_RWLOCK(policy_rwlock);
++DEFINE_RWLOCK(policy_rwlock);
+ 
+ static struct sidtab sidtab;
+ struct policydb policydb;
+ 
+ --- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -XXXX,X +XXXX,X @@ 
+
+-static struct security_operations selinux_ops = {
++struct security_operations selinux_ops = {
+ 	.name =				"selinux",
+ 
