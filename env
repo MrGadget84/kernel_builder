@@ -9,16 +9,16 @@ export outside="${maindir}/.."
 
 export ARCH="arm64"
 export SUBARCH="arm64"
-export KBUILD_BUILD_USER="nijuugo-ji"
-export KBUILD_BUILD_HOST="telegram-de"
+export KBUILD_BUILD_USER="MrGadget84"
+export KBUILD_BUILD_HOST="github"
 
-export defconfig="dandelion_defconfig"
+export defconfig="akx_ultra_defconfig"
 
 if [[ -z "$zipper_repo" ]]; then
-  export zipper_repo="https://github.com/fukiame/AnyKernel3-niigo"
+  export zipper_repo="https://github.com/MrGadget84/AnyKernel3-blossom"
 fi
 if [[ -z "$zipper_branch" ]]; then
-  export zipper_branch=enanan
+  export zipper_branch=garden
 fi
 
 export out_image="${maindir}/out/arch/${ARCH}/boot/Image.gz"

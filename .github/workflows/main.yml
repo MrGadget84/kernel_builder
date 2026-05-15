@@ -20,11 +20,11 @@ on: # [push]
       KREPO:
         description: 'kernel repo'
         required: true
-        default: 'https://github.com/Sakurajima07/kernel_xiaomi_dandelion'
+        default: 'https://github.com/MrGadget84/white_kernel_xiaomi_garden'
       KBRANCH:
         description: 'kernel branch'
         required: true
-        default: 'dandelion-q-oss'
+        default: 'garden'
       NOTES:
         description: 'notes to print out'
         required: false
@@ -36,14 +36,14 @@ on: # [push]
       ZREPO:
         description: 'zipper repo'
         required: false
-        default: 'https://github.com/Sakurajima07/AnyKernel3-blossom'
+        default: 'https://github.com/MrGadget84/AnyKernel3-blossom'
       ZBRANCH:
         description: 'zipper branch'
         required: false
-        default: 'enanan'
+        default: 'garden'
       KSU:
         description: 'if dont want ksu then leave blank'
-        required: false
+        required: true
         default: ''
       TG_RECIPENT:
         description: 'group id'
