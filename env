@@ -12,7 +12,7 @@ export SUBARCH="arm64"
 export KBUILD_BUILD_USER="MrGadget84"
 export KBUILD_BUILD_HOST="github"
 
-export defconfig="blossom_defconfig"
+export defconfig="blue_defconfig"
 
 if [[ -z "$zipper_repo" ]]; then
   export zipper_repo="https://github.com/MrGadget84/AnyKernel3_blossom"
