@@ -19,8 +19,10 @@ pack() {
     git fetch origin ${zipper_branch}
     git reset --hard origin/${zipper_branch}
   fi
-  cp -af "${out_image}" "${zipper}"
-  cp -af "${out_dtb}" "${zipper}/dtb"
+  cp -af "${out_image}" "${zipper}/zImage"
+  if [ -n "${out_dtb}" ] && [ -f "${out_dtb}" ]; then
+    cp -af "${out_dtb}" "${zipper}/dtb"
+  fi
   find "${maindir}/out" -name '*.ko' > module_list.txt
   xargs -d '\n' cp -v -t "${zipper}/modules/system/lib/modules/" < module_list.txt
   [ -n "${out_dtbo}" ] && cp -af "${out_dtbo}" "${zipper}/dtbo.img"
