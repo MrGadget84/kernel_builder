@@ -16,11 +16,11 @@ on: # [push]
       COMPILER:
         description: 'compilers used'
         required: true
-        default: 'shattered-Clang-15'
+        default: 's3ve3g-gcc'
       KREPO:
         description: 'kernel repo'
         required: true
-        default: 'https://github.com/MrGadget84/white_kernel_xiaomi_blossom'
+        default: 'https://github.com/MrGadget84/white-kernel-samsung-exynos5420'
       KBRANCH:
         description: 'kernel branch'
         required: true
@@ -36,11 +36,11 @@ on: # [push]
       ZREPO:
         description: 'zipper repo'
         required: true
-        default: 'https://github.com/MrGadget84/AnyKernel3_blossom'
+        default: 'https://github.com/MrGadget84/AnyKernel3_exynosarm'
       ZBRANCH:
         description: 'zipper branch'
         required: true
-        default: 'main'
+        default: 'chagalllte'
       KSU:
         description: 'if dont want ksu then leave blank'
         required: false
