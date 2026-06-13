@@ -20,7 +20,7 @@ on: # [push]
       KREPO:
         description: 'kernel repo'
         required: true
-        default: 'https://github.com/MrGadget84/white_kernel_xiaomi_blossom'
+        default: 'https://github.com/MrGadget84/white_kernel_samsung_mt6768'
       KBRANCH:
         description: 'kernel branch'
         required: true
