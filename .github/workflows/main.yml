@@ -36,11 +36,11 @@ on: # [push]
       ZREPO:
         description: 'zipper repo'
         required: true
-        default: 'https://github.com/MrGadget84/AnyKernel3_blossom'
+        default: 'https://github.com/MrGadget84/AnyKernel3_exynosarm'
       ZBRANCH:
         description: 'zipper branch'
         required: true
-        default: 'main'
+        default: 'a325f'
       KSU:
         description: 'if dont want ksu then leave blank'
         required: false
