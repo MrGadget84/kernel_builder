@@ -7,8 +7,8 @@ export outside="${maindir}/.."
 source "${outside}/$1env"
 
 curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s legacy
-git add . && git commit -am "drivers: KernelSU"
-KSU_git_ver=$(cd kernelsu && git rev-list --count HEAD)
+
+KSU_git_ver=$(cd drivers/kernelsu && git rev-list --count HEAD)
 KSU_ver=$(($KSU_git_ver + 10000 + 200))
 
 patchesdir="$outside/ksu/ksu-next/patches/$(echo $kernel_ver | cut -d. -f1,2)"
@@ -23,7 +23,7 @@ else
 fi
 
 if ! grep -q "int path_umount" fs/namespace.c; then
-    cat <<EOF >> fs/namespace.c
+    cat << 'EOF' >> fs/namespace.c
 
 int path_umount(struct path *path, int flags)
 {
@@ -47,7 +47,12 @@ EXPORT_SYMBOL(path_umount);
 EOF
 fi
 
+grep -q "obj-\$(CONFIG_KSU)" drivers/Makefile || echo 'obj-$(CONFIG_KSU) += kernelsu/' >> drivers/Makefile
+grep -q "drivers/kernelsu/Kconfig" drivers/Kconfig || sed -i '/endmenu/i source "drivers/kernelsu/Kconfig"' drivers/Kconfig
 sed -i '/int do_umount(/a int path_umount(struct path *path, int flags);' include/linux/fs.h
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ksn${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
 echo -e " \nKernelSU-Next Version Enable, ksn ver ${KSU_ver}" >> banner_append
+
+# 7. Делаем коммит всех изменений перед сборкой
+git add . && git commit -am "drivers: KernelSU Next integrated" || :
