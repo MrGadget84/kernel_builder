@@ -24,7 +24,7 @@ on: # [push]
       KBRANCH:
         description: 'kernel branch'
         required: true
-        default: 'Android12-5.10'
+        default: 'android12-5.10'
       NOTES:
         description: 'notes to print out'
         required: false
