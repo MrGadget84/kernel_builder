@@ -36,6 +36,7 @@ case $1 in
       HOSTCXX=clang++ \
       HOSTLD=ld.lld \
       HOSTAR=llvm-ar \
+      KCFLAGS="-Wno-int-conversion -Wno-unused-variable" \
       2>&1 | tee ${CUR_TOOLCHAIN}.log
     sh ${outside}/ver_toolchain.sh clang ld.lld > ${CUR_TOOLCHAIN}.info
   ;;
