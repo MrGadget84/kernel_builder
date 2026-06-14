@@ -8,7 +8,7 @@ source "${outside}/$1env"
 
 curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s legacy
 git add . && git commit -am "drivers: KernelSU"
-KSU_git_ver=$(cd KernelSU-Next && git rev-list --count HEAD)
+KSU_git_ver=$(cd kernelsu && git rev-list --count HEAD)
 KSU_ver=$(($KSU_git_ver + 10000 + 200))
 
 patchesdir="$outside/ksu/ksu-next/patches/$(echo $kernel_ver | cut -d. -f1,2)"
