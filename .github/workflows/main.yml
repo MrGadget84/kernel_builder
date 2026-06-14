@@ -16,7 +16,7 @@ on: # [push]
       COMPILER:
         description: 'compilers used'
         required: true
-        default: 'AOSP-Clang-14'
+        default: 'shattered-Clang-15'
       KREPO:
         description: 'kernel repo'
         required: true
@@ -44,7 +44,7 @@ on: # [push]
       KSU:
         description: 'if dont want ksu then leave blank'
         required: false
-        default: ''
+        default: 'ksu-next'
       TG_RECIPENT:
         description: 'group id'
         required: true
