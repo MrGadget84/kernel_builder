@@ -23,7 +23,7 @@ case $1 in
       CROSS_COMPILE="aarch64-linux-gnu-" \
       CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
       CROSS_COMPILE_COMPAT="arm-linux-gnueabi-" \
-      CC=clang \
+      CC="clang -w" \
       LD=ld.lld \
       NM=llvm-nm \
       AR=llvm-ar \
@@ -32,8 +32,8 @@ case $1 in
       OBJDUMP=llvm-objdump \
       READELF=llvm-readelf \
       LLVM_IAS=1 \
-      HOSTCC=clang \
-      HOSTCXX=clang++ \
+      HOSTCC="clang -w" \
+      HOSTCXX="clang++ -w" \
       HOSTLD=ld.lld \
       HOSTAR=llvm-ar \
       KCFLAGS="-Wno-deprecated-non-prototype -Wno-strict-prototypes -Wno-int-conversion -Wno-unused-variable -Wno-fortify-source -Wno-error" \
