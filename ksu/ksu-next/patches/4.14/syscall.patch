@@ -7,8 +7,8 @@ index 78be582b5766..c2045ade6ccc 100644
   * axis, etc.
   */
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
-+extern bool ksu_input_hook __read_mostly;
-+extern int ksu_handle_input_handle_event(unsigned int *type, unsigned int *code, int *value);
++extern bool ksun_input_hook __read_mostly;
++extern int ksun_handle_input_handle_event(unsigned int *type, unsigned int *code, int *value);
 +#endif
 +
  void input_event(struct input_dev *dev,
@@ -17,8 +17,8 @@ index 78be582b5766..c2045ade6ccc 100644
  	unsigned long flags;
  
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
-+	if (unlikely(ksu_input_hook))
-+		ksu_handle_input_handle_event(&type, &code, &value);
++	if (unlikely(ksun_input_hook))
++		ksun_handle_input_handle_event(&type, &code, &value);
 +#endif
 +
  	if (is_event_supported(type, dev->evbit, EV_MAX)) {
@@ -29,20 +29,20 @@ diff --git a/fs/open.c b/fs/open.c
 index f5a50cc9cd12..fd694b702278 100644
 --- a/fs/open.c
 +++ b/fs/open.c
-@@ -512,8 +512,17 @@ static long do_faccessat(int dfd, const char __user *filename, int mode, int fla
+@@ -512,8 +512,17_
  	return res;
  }
  
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
 +__attribute__((hot))
-+extern int ksu_handle_faccessat(int *dfd, const char __user **filename_user,
++extern int ksun_handle_faccessat(int *dfd, const char __user **filename_user,
 +		               int *mode, int *flags);
 +#endif
 +
  SYSCALL_DEFINE3(faccessat, int, dfd, const char __user *, filename, int, mode)
  {
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
-+	ksu_handle_faccessat(&dfd, &filename, &mode, NULL);
++	ksun_handle_faccessat(&dfd, &filename, &mode, NULL);
 +#endif
  	return do_faccessat(dfd, filename, mode, 0);
  }
@@ -51,21 +51,21 @@ diff --git a/fs/read_write.c b/fs/read_write.c
 index 7a2ff6157eda..c7a5e8ec2988 100644
 --- a/fs/read_write.c
 +++ b/fs/read_write.c
-@@ -618,8 +618,18 @@ ssize_t ksys_read(unsigned int fd, char __user *buf, size_t count)
+@@ -618,8 +618,18_
  	return ret;
  }
  
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
-+extern bool ksu_vfs_read_hook __read_mostly;
-+extern int ksu_handle_sys_read(unsigned int fd, char __user **buf_ptr,
++extern bool ksun_vfs_read_hook __read_mostly;
++extern int ksun_handle_sys_read(unsigned int fd, char __user **buf_ptr,
 +			size_t *count_ptr);
 +#endif
 +
  SYSCALL_DEFINE3(read, unsigned int, fd, char __user *, buf, size_t, count)
  {
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
-+	if (unlikely(ksu_vfs_read_hook))
-+		ksu_handle_sys_read(fd, &buf, &count);
++	if (unlikely(ksun_vfs_read_hook))
++		ksun_handle_sys_read(fd, &buf, &count);
 +#endif
  	return ksys_read(fd, buf, count);
  }
@@ -80,7 +80,7 @@ index daf28da335cd..3fa40c6d7446 100644
  
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
 +__attribute__((hot))
-+extern int ksu_handle_stat(int *dfd, const char __user **filename_user,
++extern int ksun_handle_stat(int *dfd, const char __user **filename_user,
 +		               int *flags);
 +#endif
 +
@@ -92,7 +92,7 @@ index daf28da335cd..3fa40c6d7446 100644
  	int error;
  
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
-+	ksu_handle_stat(&dfd, &filename, &flag);
++	ksun_handle_stat(&dfd, &filename, &flag);
 +#endif
  	error = vfs_fstatat(dfd, filename, &stat, flag);
  	if (error)
@@ -102,7 +102,7 @@ index daf28da335cd..3fa40c6d7446 100644
  	int error;
  
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK) // 32-bit su
-+	ksu_handle_stat(&dfd, &filename, &flag);
++	ksun_handle_stat(&dfd, &filename, &flag);
 +#endif
  	error = vfs_fstatat(dfd, filename, &stat, flag);
  	if (error)
@@ -116,10 +116,10 @@ index 5d5e417c2fa4..93ce05cca024 100644
  	return ret;
  }
  
-+extern bool ksu_execveat_hook __read_mostly;
-+extern int ksu_handle_execveat(int *fd, struct filename **filename_ptr, void *argv,
++extern bool ksun_execveat_hook __read_mostly;
++extern int ksun_handle_execveat(int *fd, struct filename **filename_ptr, void *argv,
 +			void *envp, int *flags);
-+extern int ksu_handle_execveat_sucompat(int *fd, struct filename **filename_ptr,
++extern int ksun_handle_execveat_sucompat(int *fd, struct filename **filename_ptr,
 +				 void *argv, void *envp, int *flags);
 +
  /*
@@ -129,10 +129,10 @@ index 5d5e417c2fa4..93ce05cca024 100644
  			      struct user_arg_ptr envp,
  			      int flags)
  {
-+	if (unlikely(ksu_execveat_hook))
-+		ksu_handle_execveat(&fd, &filename, &argv, &envp, &flags);
++	if (unlikely(ksun_execveat_hook))
++		ksun_handle_execveat(&fd, &filename, &argv, &envp, &flags);
 +	else
-+		ksu_handle_execveat_sucompat(&fd, &filename, &argv, &envp, &flags);
++		ksun_handle_execveat_sucompat(&fd, &filename, &argv, &envp, &flags);
 +
  	char *pathbuf = NULL;
  	struct linux_binprm *bprm;
