@@ -11,23 +11,20 @@ case $1 in
     if [[ ! -d "${dir}" ]]; then
       mkdir ${dir} && cd ${dir}
       curl -Lo a.tar.gz "https://github.com/erabye/shattered-clang/releases/download/shattered-Clang-15.0.7/shattered-Clang-15.0.7.tar.gz"
-      tar -zxf a.tar.gz --strip-components=1 || tar -zxf a.tar.gz
+      tar -zxf a.tar.gz
     fi
   ;;
-  
+
   "build" )
-    export PATH="$clang/bin:$gcc64/bin:$gcc/bin:/usr/bin:${PATH}"
+    export PATH="${dir}/bin:/usr/bin:${PATH}"
     sed -i 's/info BTF/return 0/g' scripts/link-vmlinux.sh 2>/dev/null || :
     sed -i 's/cmd btf/return 0/g' scripts/link-vmlinux.sh 2>/dev/null || :
     git submodule update --init --recursive
-    make O=out ARCH=arm64 a32_lineage_defconfig
-    make O=out ARCH=arm64 olddefconfig
+    make -j$NJOBS O=out CC=clang LD=ld.lld ARCH=arm64 SUBARCH=arm64 $2
     make -j$NJOBS O=out \
-      CROSS_COMPILE="aarch64-linux-android-" \
-      CROSS_COMPILE_ARM32="arm-linux-androideabi-" \
-      CROSS_COMPILE_COMPAT="arm-linux-androideabi-" \
-      CLANG_TRIPLE="aarch64-linux-gnu-" \
-      LD_LIBRARY_PATH="$clang/lib64:$LD_LIBRABRY_PATH" \
+      CROSS_COMPILE="aarch64-linux-gnu-" \
+      CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
+      CROSS_COMPILE_COMPAT="arm-linux-gnueabi-" \
       CC="clang -w" \
       LD=ld.lld \
       NM=llvm-nm \
