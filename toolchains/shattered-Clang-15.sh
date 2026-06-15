@@ -11,7 +11,7 @@ case $1 in
     if [[ ! -d "${dir}" ]]; then
       mkdir ${dir} && cd ${dir}
       curl -Lo a.tar.gz "https://github.com/erabye/shattered-clang/releases/download/shattered-Clang-15.0.7/shattered-Clang-15.0.7.tar.gz"
-      tar -zxf a.tar.gz
+      tar -zxf a.tar.gz --strip-components=1 || tar -zxf a.tar.gz
     fi
   ;;
   
