@@ -11,7 +11,7 @@ curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/ke
 KSU_git_ver=$(cd drivers/kernelsu && git rev-list --count HEAD)
 KSU_ver=$(($KSU_git_ver + 10000 + 200))
 
-patchesdir="$outside/ksu/ksu-next/patches/$(echo $kernel_ver | cut -d. -f1,2)"
+patchesdir="$outside/ksu/ksu-next/patches/4.14/"
 
 if [[ -d "$patchesdir" ]]; then
   for patch_file in "$patchesdir"/*.patch ; do
