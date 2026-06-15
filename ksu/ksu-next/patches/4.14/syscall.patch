@@ -2,16 +2,13 @@ diff --git a/drivers/input/input.c b/drivers/input/input.c
 index 78be582b5766..c2045ade6ccc 100644
 --- a/drivers/input/input.c
 +++ b/drivers/input/input.c
-@@ -420,11 +420,27 @@ void input_handle_event(struct input_dev *dev,
+@@ -365,29 +365,39 @@ static void input_handle_event(struct input_dev *dev,
   * to 'seed' initial state of a switch or initial position of absolute
   * axis, etc.
   */
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
 +extern bool ksun_input_hook __read_mostly;
 +extern int ksun_handle_input_handle_event(unsigned int *type, unsigned int *code, int *value);
-+// Перенаправляем старые вызовы ksu_ на новые ksun_ прямо здесь
-+#define ksu_input_hook ksun_input_hook
-+#define ksu_handle_input_handle_event ksun_handle_input_handle_event
 +#endif
 +
  void input_event(struct input_dev *dev,
@@ -19,14 +16,33 @@ index 78be582b5766..c2045ade6ccc 100644
  {
  	unsigned long flags;
  
+-#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
+-	if (unlikely(ksu_input_hook))
+-		ksu_handle_input_handle_event(&type, &code, &value);
+-#endif
+-
+ 	if (is_event_supported(type, dev->evbit, EV_MAX)) {
+ 
+ 		spin_lock_irqsave(&dev->event_lock, flags);
+ 		add_input_randomness(type, code, value);
+ 		input_to_handler(dev, type, code, value);
+ 		spin_unlock_irqrestore(&dev->event_lock, flags);
+ 	}
+ }
+ EXPORT_SYMBOL(input_event);
+ 
+ void input_handle_event(struct input_dev *dev,
+ 			unsigned int type, unsigned int code, int value)
+ {
+ 	int disposition = input_get_disposition(dev, type, code, &value);
+ 
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
 +	if (unlikely(ksun_input_hook))
 +		ksun_handle_input_handle_event(&type, &code, &value);
 +#endif
 +
- 	if (is_event_supported(type, dev->evbit, EV_MAX)) {
- 
- 		spin_lock_irqsave(&dev->event_lock, flags);
+ 	if (disposition != INPUT_IGNORE_EVENT && type != EV_SYN)
+ 		add_input_randomness(type, code, value);
 
 diff --git a/fs/open.c b/fs/open.c
 index f5a50cc9cd12..fd694b702278 100644
