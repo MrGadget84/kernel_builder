@@ -17,7 +17,7 @@ case $1 in
 
   "build" )
     export PATH="${dir}/bin:/usr/bin:${PATH}"
-    sudo rm -f /usr/bin/pahole 2>/dev/null || :
+    sed -i 's/${RESOLVE_BTFIDS} vmlinux/echo "Skipping BTFIDS"/g' scripts/link-vmlinux.sh 2>/dev/null || :
     git submodule update --init --recursive
     make -j$NJOBS O=out CC=clang LD=ld.lld ARCH=arm64 SUBARCH=arm64 $2
     make -j$NJOBS O=out \
