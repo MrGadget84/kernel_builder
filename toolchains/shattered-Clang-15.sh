@@ -45,3 +45,4 @@ case $1 in
       2>&1 | tee ${CUR_TOOLCHAIN}.log
     sh ${outside}/ver_toolchain.sh clang ld.lld > ${CUR_TOOLCHAIN}.info
   ;;
+esac
