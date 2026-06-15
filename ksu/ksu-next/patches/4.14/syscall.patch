@@ -2,7 +2,7 @@ diff --git a/drivers/input/input.c b/drivers/input/input.c
 index 78be582b5766..c2045ade6ccc 100644
 --- a/drivers/input/input.c
 +++ b/drivers/input/input.c
-@@ -420,11 +420,21 @@ void input_handle_event(struct input_dev *dev,
+@@ -370,11 +370,21 @@ static void input_handle_event(struct input_dev *dev,
   * to 'seed' initial state of a switch or initial position of absolute
   * axis, etc.
   */
@@ -11,7 +11,7 @@ index 78be582b5766..c2045ade6ccc 100644
 +extern int ksun_handle_input_handle_event(unsigned int *type, unsigned int *code, int *value);
 +#endif
 +
- void input_event(struct input_dev *dev,
+ void input_handle_event(struct input_dev *dev,
  		 unsigned int type, unsigned int code, int value)
  {
  	unsigned long flags;
@@ -24,7 +24,7 @@ index 78be582b5766..c2045ade6ccc 100644
  	if (is_event_supported(type, dev->evbit, EV_MAX)) {
  
  		spin_lock_irqsave(&dev->event_lock, flags);
- 
+
 diff --git a/fs/open.c b/fs/open.c
 index f5a50cc9cd12..fd694b702278 100644
 --- a/fs/open.c
