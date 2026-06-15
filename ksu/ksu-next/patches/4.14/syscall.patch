@@ -2,16 +2,19 @@ diff --git a/drivers/input/input.c b/drivers/input/input.c
 index 78be582b5766..c2045ade6ccc 100644
 --- a/drivers/input/input.c
 +++ b/drivers/input/input.c
-@@ -370,11 +370,21 @@ static void input_handle_event(struct input_dev *dev,
+@@ -420,11 +420,27 @@ void input_handle_event(struct input_dev *dev,
   * to 'seed' initial state of a switch or initial position of absolute
   * axis, etc.
   */
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
 +extern bool ksun_input_hook __read_mostly;
 +extern int ksun_handle_input_handle_event(unsigned int *type, unsigned int *code, int *value);
++// Перенаправляем старые вызовы ksu_ на новые ksun_ прямо здесь
++#define ksu_input_hook ksun_input_hook
++#define ksu_handle_input_handle_event ksun_handle_input_handle_event
 +#endif
 +
- void input_handle_event(struct input_dev *dev,
+ void input_event(struct input_dev *dev,
  		 unsigned int type, unsigned int code, int value)
  {
  	unsigned long flags;
