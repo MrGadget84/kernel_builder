@@ -22,11 +22,6 @@ else
   exit 1
 fi
 
-sed -i 's/ksu_execveat_hook/ksun_execveat_hook/g' fs/exec.c
-sed -i 's/ksu_handle_execveat/ksun_handle_execveat/g' fs/exec.c
-sed -i 's/ksu_input_hook/ksun_input_hook/g' drivers/input/input.c
-sed -i 's/ksu_handle_input_handle_event/ksun_handle_input_handle_event/g' drivers/input/input.c
-
 if ! grep -q "int path_umount" fs/namespace.c; then
     cat << 'EOF' >> fs/namespace.c
 
