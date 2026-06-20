@@ -36,7 +36,7 @@ on: # [push]
       ZREPO:
         description: 'zipper repo'
         required: true
-        default: 'https://github.com/MrGadget84/AnyKernel3_exynosarm'
+        default: 'https://github.com/MrGadget84/AnyKernel3_samsung'
       ZBRANCH:
         description: 'zipper branch'
         required: true
