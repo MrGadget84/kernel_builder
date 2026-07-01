@@ -16,7 +16,7 @@ on: # [push]
       COMPILER:
         description: 'compilers used'
         required: true
-        default: 'shattered-Clang-15'
+        default: 'AOSP-Clang-11'
       KREPO:
         description: 'kernel repo'
         required: true
@@ -44,7 +44,7 @@ on: # [push]
       KSU:
         description: 'if dont want ksu then leave blank'
         required: false
-        default: ''
+        default: 'ksn-vanilla'
       TG_RECIPENT:
         description: 'group id'
         required: true
@@ -150,6 +150,14 @@ jobs:
                 bash ../build.sh "$COMPILERS"
               ;; 
               "ksu-next" )
+                bash ../tg_utils.sh msg "gh $RUN_NUM: KernelSU-Next patching enabled, patching"
+                bash ../ksu/ksu-next/ksu-next.sh
+                bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
+                bash ../build.sh "$COMPILERS"
+              ;;
+              "ksn-vanilla" )
+                bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
+                bash ../build.sh "$COMPILERS"
                 bash ../tg_utils.sh msg "gh $RUN_NUM: KernelSU-Next patching enabled, patching"
                 bash ../ksu/ksu-next/ksu-next.sh
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
