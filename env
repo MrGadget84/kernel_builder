@@ -21,10 +21,9 @@ if [[ -z "$zipper_branch" ]]; then
   export zipper_branch=a325f
 fi
 
-export out_image="${maindir}/out/arch/${ARCH}/boot/Image.gz"
+export out_image="${maindir}/out/arch/${ARCH}/boot/Image.gz-dtb"
 export out_dtb="${maindir}/out/arch/${ARCH}/boot/dtb"
 export out_dtbo="${maindir}/out/arch/${ARCH}/boot/dtbo.img"
-
 
 export zipper="${outside}/zipper"
 
