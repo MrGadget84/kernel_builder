@@ -32,7 +32,7 @@ case $1 in
       OBJCOPY=llvm-objcopy \
       OBJDUMP=llvm-objdump \
       READELF=llvm-readelf \
-      LLVM_IAS=1 \
+      LLVM_IAS=0 \
       HOSTCC="clang -w" \
       HOSTCXX="clang++ -w" \
       HOSTLD=ld.lld \
