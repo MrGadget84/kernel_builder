@@ -29,7 +29,7 @@ case $1 in
       CROSS_COMPILE_ARM32="arm-linux-androideabi-" \
       CROSS_COMPILE_COMPAT="arm-linux-androideabi-" \
       CLANG_TRIPLE="aarch64-linux-gnu-" \
-      LD_LIBRARY_PATH="$clang/lib64:$LD_LIBRABRY_PATH" \
+      LD_LIBRARY_PATH="$clang/lib64:$LD_LIBRARY_PATH" \
       CC=clang \
       LD=ld.lld \
       2>&1 | tee ${CUR_TOOLCHAIN}.log
