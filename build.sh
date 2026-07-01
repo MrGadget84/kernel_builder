@@ -1,6 +1,4 @@
 #!/bin/bash
-#
-# idk lmao
 
 export maindir="$(pwd)"
 export outside="${maindir}/.."
@@ -20,7 +18,8 @@ pack() {
     git reset --hard origin/${zipper_branch}
   fi
   
-  cp -af "${out_image}" "${zipper}/Image.gz-dtb"
+  cp -af "${out_image}" "${zipper}/Image.gz"
+  cp -af "${out_dtb}" "${zipper}/dtb"
   
   mkdir -p "${zipper}/modules/system/lib/modules/"
   find "${maindir}/out" -name '*.ko' > module_list.txt
@@ -40,9 +39,7 @@ pack() {
   cd "${maindir}"
 }
 
-# build
 for toolchain in $1; do
-  #rm -rf out
 
   bash -x "${outside}/toolchains/${toolchain}.sh" setup
 
