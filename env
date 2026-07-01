@@ -15,7 +15,7 @@ export KBUILD_BUILD_HOST="github"
 export defconfig="a32_lineage_defconfig"
 
 if [[ -z "$zipper_repo" ]]; then
-  export zipper_repo="https://github.com/MrGadget84/AnyKernel3_exynosarm"
+  export zipper_repo="https://github.com/MrGadget84/AnyKernel3_samsung"
 fi
 if [[ -z "$zipper_branch" ]]; then
   export zipper_branch=a325f
