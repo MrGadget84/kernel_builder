@@ -7,7 +7,6 @@ export outside="${maindir}/.."
 source "${outside}/$1env"
 
 curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash
-# curl -LSs "https://raw.githubusercontent.com/White-Society/ReSukiSU-Old/main/kernel/setup.sh" | bash
 git add . && git commit -am "drivers: KernelSU"
 SUKI_DIR="drivers/kernelsu"
 KSU_git_ver=$(cd $SUKI_DIR && git rev-list --count HEAD)
@@ -25,14 +24,14 @@ else
   exit 1
 fi
 
-#if [[ -d "$suspatchesdir" ]]; then
-#  for patch_file in "$suspatchesdir"/*.patch ; do
-#    patch -p1 < "$patch_file"
-#  done
-#else
-#  echo "patching susfs failed, the kernel version you want to patch doesnt have patches here yet"
-#  exit 1
-#fi
+if [[ -d "$suspatchesdir" ]]; then
+  for patch_file in "$suspatchesdir"/*.patch ; do
+    patch -p1 < "$patch_file"
+  done
+else
+  echo "patching susfs failed, the kernel version you want to patch doesnt have patches here yet"
+  exit 1
+fi
 
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-suki${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
