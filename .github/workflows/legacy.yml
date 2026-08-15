@@ -1,4 +1,4 @@
-name: Building kernel
+name: Building legacy branch
 
 on: # [push]
 #  release:
