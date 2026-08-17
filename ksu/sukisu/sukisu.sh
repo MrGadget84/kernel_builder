@@ -13,16 +13,16 @@ KSU_git_ver=$(cd $SUKI_DIR && git rev-list --count HEAD)
 KSU_ver=$KSU_git_ver
 
 patchesdir="$outside/ksu/sukisu/hooks/"
-#suspatchesdir="$outside/ksu/sukisu/sus/"
+suspatchesdir="$outside/ksu/sukisu/sus/"
 
-#if [[ -d "$suspatchesdir" ]]; then
-#  for patch_file in "$suspatchesdir"/*.patch ; do
-#    patch -p1 < "$patch_file"
-#  done
-#else
-#  echo "patching susfs failed, the kernel version you want to patch doesnt have patches here yet"
-#  exit 1
-#fi
+if [[ -d "$suspatchesdir" ]]; then
+  for patch_file in "$suspatchesdir"/*.patch ; do
+    patch -p1 < "$patch_file"
+  done
+else
+  echo "patching susfs failed, the kernel version you want to patch doesnt have patches here yet"
+  exit 1
+fi
 
 if [[ -d "$patchesdir" ]]; then
   for patch_file in "$patchesdir"/*.patch ; do
