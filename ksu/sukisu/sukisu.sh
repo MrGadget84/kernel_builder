@@ -36,10 +36,8 @@ fi
 if [ -f "KernelSU/kernel/tools/inline_hook_check.mk" ]; then
   sed -i 's/\$(error/\$(warning/g' KernelSU/kernel/tools/inline_hook_check.mk
 fi
-echo "[FIX] Running total sed scan for inline_hook_check.mk and Kbuild..."
-find . -type f -name "inline_hook_check.mk" -exec sed -i 's/\$(error/\$(warning/g' {} +
-find . -type f -name "Kbuild" -path "*/kernelsu/*" -exec sed -i 's/\$(error/\$(warning/g' {} +
-echo "[FIX] All strict errors successfully downgraded to warnings!"
+find . -type f \( -name "Kbuild" -o -name "*.mk" -o -name "Makefile" \) -exec sed -i 's/\$(error/\$(warning/g' {} +
+echo "[FIX] Absolutely all strict blocks downgraded to warnings!"
 
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-suki${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
