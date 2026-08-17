@@ -17,7 +17,7 @@ suspatchesdir="$outside/ksu/sukisu/sus/"
 
 if [[ -d "$suspatchesdir" ]]; then
   for patch_file in "$suspatchesdir"/*.patch ; do
-    patch -p1 < "$patch_file"
+    patch -p1 --fuzz=3 --ignore-whitespace < "$patch_file"
   done
 else
   echo "patching susfs failed, the kernel version you want to patch doesnt have patches here yet"
@@ -26,7 +26,7 @@ fi
 
 if [[ -d "$patchesdir" ]]; then
   for patch_file in "$patchesdir"/*.patch ; do
-    patch -p1 < "$patch_file"
+    patch -p1 --fuzz=3 --ignore-whitespace < "$patch_file"
   done
 else
   echo "patching ksu failed, the kernel version you want to patch doesnt have patches here yet"
