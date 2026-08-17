@@ -37,6 +37,10 @@ if [ -f "KernelSU/kernel/tools/inline_hook_check.mk" ]; then
   sed -i 's/\$(error/\$(warning/g' KernelSU/kernel/tools/inline_hook_check.mk
 fi
 
+if [ -f "KernelSU/kernel/drivers/kernelsu/Kbuild" ]; then
+  sed -i 's/\$(error/\$(warning/g' KernelSU/kernel/drivers/kernelsu/Kbuild
+fi
+
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-suki${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
 echo -e " \nIntegration ReSukiSU ver ${KSU_ver}" >> banner_append
