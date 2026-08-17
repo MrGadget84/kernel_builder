@@ -10,7 +10,7 @@ curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup
 git add . && git commit -am "drivers: KernelSU"
 SUKI_DIR="drivers/kernelsu"
 KSU_git_ver=$(cd $SUKI_DIR && git rev-list --count HEAD)
-KSU_ver=$(($KSU_git_ver + 10000 + 200))
+KSU_ver=$KSU_git_ver
 
 patchesdir="$outside/ksu/sukisu/hooks/"
 #suspatchesdir="$outside/ksu/sukisu/sus/"
@@ -35,4 +35,4 @@ fi
 
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-suki${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
-echo -e " \nReSukiSU Enable! resukisu ver ${KSU_ver}" >> banner_append
+echo -e " \nIntegration ReSukiSU ver ${KSU_ver}" >> banner_append
