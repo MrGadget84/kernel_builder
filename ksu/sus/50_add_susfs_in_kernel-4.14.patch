@@ -1160,7 +1160,7 @@ index 504e16e913db..ac9f6b7904bc 100644
  #include <linux/pagemap.h>
  #include <linux/compat.h>
 +#if defined(CONFIG_KSU_SUSFS_SUS_KSTAT) || defined(CONFIG_KSU_SUSFS_SUS_MOUNT)
-+#include "include/linux/susfs_def.h"
++#include <linux/susfs_def.h>
 +#endif
  
  #include <linux/uaccess.h>
