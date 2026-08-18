@@ -44,7 +44,7 @@ on: # [push]
       KSU:
         description: 'if dont want ksu then leave blank'
         required: false
-        default: 'suki'
+        default: 'susfs'
       TG_RECIPENT:
         description: 'group id'
         required: true
@@ -123,13 +123,19 @@ jobs:
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
                 bash ../tg_utils.sh msg "gh $RUN_NUM: KernelSU patching enabled, patching"
-                bash ../ksu/sukisu/sukisu.sh
+                bash ../ksu/ksu.sh
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
-              "suki" )
+              "ksu" )
                 bash ../tg_utils.sh msg "gh $RUN_NUM: ReSukiSU patching enabled, patching"
-                bash ../ksu/sukisu/sukisu.sh
+                bash ../ksu/ksu.sh
+                bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
+                bash ../build.sh "$COMPILERS"
+              ;;
+              "susfs" )
+                bash ../tg_utils.sh msg "gh $RUN_NUM: ReSukiSU patching enabled, patching"
+                bash ../ksu/susfs.sh
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
