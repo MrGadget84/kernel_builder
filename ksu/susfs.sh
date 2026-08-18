@@ -41,6 +41,7 @@ if [ -f "KernelSU/kernel/tools/inline_hook_check.mk" ]; then
   sed -i 's/\$(error/\$(warning/g' KernelSU/kernel/tools/inline_hook_check.mk
 fi
 
+find . -type f \( -name "Kbuild" -o -name "*.mk" -o -name "Makefile" \) -exec sed -i 's/\$(error/\$(warning/g' {} +
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-suki${KSU_ver}-susfs\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
 echo -e " \nReSukiSU Enable! resukisu ver ${KSU_ver}" >> banner_append
