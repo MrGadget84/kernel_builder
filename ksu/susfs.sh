@@ -37,8 +37,8 @@ else
   exit 1
 fi
 
-if [ -f "drivers/kernelsu/kernel/tools/inline_hook_check.mk" ]; then
-  sed -i 's/\$(error/\$(warning/g' drivers/kernelsu/kernel/tools/inline_hook_check.mk
+if [ -f "KernelSU/kernel/tools/inline_hook_check.mk" ]; then
+  sed -i 's/\$(error/\$(warning/g' KernelSU/kernel/tools/inline_hook_check.mk
 fi
 
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-suki${KSU_ver}-susfs\"/" "${defconfig_file}"
