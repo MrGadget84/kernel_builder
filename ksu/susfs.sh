@@ -11,7 +11,10 @@ git add . && git commit -am "drivers: KernelSU"
 curl -LSs https://gitlab.com/simonpunk/susfs4ksu/-/raw/kernel-4.14/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch -o drivers/kernelsu/10_enable_susfs_for_ksu.patch
 cd drivers/kernelsu
 patch -p1 --fuzz=3 --ignore-whitespace < 10_enable_susfs_for_ksu.patch
-sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#endif\n/' supercall/dispatch.c
+if [ -f "supercall/dispatch.c" ]; then
+  echo "[FIX] Injecting SuSFS v1.6.0 compatibility layers into dispatch.c..."
+  sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#define CMD_SUSFS_ADD_SUS_PATH_LOOP 0x9991\n#define CMD_SUSFS_HIDE_SUS_MNTS_FOR_NON_SU_PROCS 0x9992\n#define CMD_SUSFS_ADD_SUS_MAP 0x9993\n#define CMD_SUSFS_ENABLE_AVC_LOG_SPOOFING 0x9994\n#endif\n/' supercall/dispatch.c
+fi
 cd ../..
 SUKI_DIR="drivers/kernelsu"
 KSU_git_ver=$(cd $SUKI_DIR && git rev-list --count HEAD)
