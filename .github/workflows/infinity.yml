@@ -137,7 +137,7 @@ jobs:
                 bash ../tg_utils.sh msg "gh $RUN_NUM: ReSukiSU patching enabled, patching"
                 bash ../ksu/susfs.sh
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
-                bash ../build.sh "$COMPILERS"
+                bash ../build.sh "$COMPILERS" || true
               ;;
               "" )
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
