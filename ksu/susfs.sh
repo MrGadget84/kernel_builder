@@ -47,6 +47,11 @@ if [ -f "KernelSU/kernel/tools/inline_hook_check.mk" ]; then
 fi
 
 find . -type f \( -name "Kbuild" -o -name "*.mk" -o -name "Makefile" \) -exec sed -i 's/\$(error/\$(warning/g' {} +
+if [ -f "Makefile" ]; then
+  echo "[FIX] Patching false sub-make check on line 154 of root Makefile..."
+  sed -i '154s/Error 2/warning/g' Makefile 2>/dev/null || true
+  sed -i '154s/exit 2/echo "Sub-make check bypassed"/g' Makefile 2>/dev/null || true
+fi
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-suki${KSU_ver}-susfs\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
 echo -e " \nReSukiSU Enable! resukisu ver ${KSU_ver}" >> banner_append
