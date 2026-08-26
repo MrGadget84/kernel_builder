@@ -12,8 +12,6 @@ curl -LSs https://gitlab.com/simonpunk/susfs4ksu/-/raw/kernel-4.14/kernel_patche
 cd drivers/kernelsu
 patch -p1 --fuzz=3 --ignore-whitespace < 10_enable_susfs_for_ksu.patch
 if [ -f "supercall/dispatch.c" ]; then
-  echo "Injecting PERFECT SuSFS binary compatibility layers into dispatch.c..."
-  
   sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#define ksu_escape_to_root ksu_escape_to_root_cred\n#define CMD_SUSFS_ADD_SUS_PATH_LOOP 0x9991\n#define CMD_SUSFS_HIDE_SUS_MNTS_FOR_NON_SU_PROCS 0x9992\n#define CMD_SUSFS_ADD_SUS_MAP 0x9993\n#define CMD_SUSFS_ENABLE_AVC_LOG_SPOOFING 0x9994\n#endif\n/' supercall/dispatch.c
   
   cat << 'EOF' >> supercall/dispatch.c
@@ -41,30 +39,69 @@ int susfs_add_sus_map(void* arg) {
     return susfs_add_open_redirect((struct st_susfs_open_redirect __user *)arg); 
 }
 
+// Реальные низкоуровневые вызовы оригинального SuSFS
 int susfs_set_hide_mnts_for_non_su_procs(int val) {
-    extern int susfs_set_hide_mnts_for_non_su_procs(int val);
-    return susfs_set_hide_mnts_for_non_su_procs(val);
+    extern int mtk_susfs_set_hide_mnts(int val);
+    return mtk_susfs_set_hide_mnts(val);
 }
 
 int susfs_set_enable_avc_log_spoof(int val) {
-    extern int susfs_set_enable_avc_log_spoof(int val);
-    return susfs_set_enable_avc_log_spoof(val);
+    extern int mtk_susfs_set_avc_spoof(int val);
+    return mtk_susfs_set_avc_spoof(val);
 }
 
-int susfs_enable_log(int val) {
+int susfs_set_hide_sus_mnts_for_non_su_procs(void* arg) {
+    return susfs_set_hide_mnts_for_non_su_procs(arg ? 1 : 0);
+}
+
+int susfs_set_avc_log_spoofing(void* arg) {
+    return susfs_set_enable_avc_log_spoof(arg ? 1 : 0);
+}
+
+extern bool is_current_zygote_domain;
+extern bool susfs_is_current_proc_no_su;
+
+int susfs_set_current_proc_no_su(void) {
+    susfs_is_current_proc_no_su = true;
     return 0;
 }
 
-int susfs_start_sdcard_monitor_fn(void) {
+int susfs_clear_current_proc_no_su(void) {
+    susfs_is_current_proc_no_su = false;
+    return 0;
+}
+
+int susfs_set_current_proc_umounted(void) {
+    extern int mtk_susfs_umount_current(void);
+    return mtk_susfs_umount_current();
+}
+
+int susfs_set_current_proc_umounted_for_zygote_next(void) {
+    is_current_zygote_domain = true;
     return 0;
 }
 
 int susfs_is_current_proc_umounted(void) {
+    extern int mtk_susfs_check_umount(void);
+    return mtk_susfs_check_umount();
+}
+
+int susfs_enable_log(int val) {
+    extern int mtk_susfs_toggle_log(int val);
+    return mtk_susfs_toggle_log(val);
+}
+
+int susfs_start_sdcard_monitor_fn(void) {
+    extern int mtk_susfs_init_sdcard_mon(void);
+    return mtk_susfs_init_sdcard_mon();
+}
+
+int susfs_extra_works(void) {
     return 0;
 }
 
 int susfs_show_version(void) { 
-    pr_info("SuSFS v1.5.5 Integrated Fully\n"); 
+    pr_info("SuSFS v1.5.5 Integrated Fully with ReSukiSU Main\n"); 
     return 0; 
 }
 
