@@ -44,7 +44,7 @@ on: # [push]
       KSU:
         description: 'if dont want ksu then leave blank'
         required: false
-        default: 'susfs'
+        default: 'ksu'
       TG_RECIPENT:
         description: 'group id'
         required: true
