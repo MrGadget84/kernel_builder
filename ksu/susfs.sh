@@ -34,6 +34,7 @@ int susfs_extra_works(void) { return 0; }
 int susfs_set_current_proc_umounted(void) { return 0; }
 int susfs_set_current_proc_umounted_for_zygote_next(void) { return 0; }
 int susfs_clear_current_proc_no_su(void) { return 0; }
+int ksu_escape_to_root_cred(void) { return 0; }
 void *ksu_input_hook = NULL;
 #endif
 EOF
