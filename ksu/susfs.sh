@@ -16,29 +16,63 @@ if [ -f "supercall/dispatch.c" ]; then
   cat << 'EOF' >> supercall/dispatch.c
 
 #ifdef CONFIG_KSU_SUSFS
-bool is_current_zygote_domain = false;
-int susfs_is_allow_su(void) { return 1; }
-int susfs_add_sus_path_loop(void* arg) { return 0; }
-int susfs_show_version(void) { return 0; }
-int susfs_get_enabled_features(void) { return 0; }
-int susfs_show_variant(void) { return 0; }
-int susfs_set_hide_sus_mnts_for_non_su_procs(void* arg) { return 0; }
-int susfs_add_sus_map(void* arg) { return 0; }
-int susfs_set_avc_log_spoofing(void* arg) { return 0; }
-int susfs_enable_log(void* arg) { return 0; }
-int susfs_start_sdcard_monitor_fn(void) { return 0; }
-int susfs_is_current_proc_umounted(void) { return 0; }
-int susfs_is_current_proc_no_su(void) { return 0; }
-int susfs_set_current_proc_no_su(void) { return 0; }
-int susfs_extra_works(void) { return 0; }
-int susfs_set_current_proc_umounted(void) { return 0; }
-int susfs_set_current_proc_umounted_for_zygote_next(void) { return 0; }
-int susfs_clear_current_proc_no_su(void) { return 0; }
-int ksu_escape_to_root_cred(void) { return 0; }
+extern struct cred *ksu_cred;
+
+int ksu_escape_to_root_cred(void) {
+    if (ksu_cred) {
+        commit_creds(ksu_cred);
+        return 0;
+    }
+    return -1;
+}
+
+int susfs_is_allow_su(void) { 
+    return 1; 
+}
+
+int susfs_add_sus_path_loop(void* arg) { 
+    return susfs_add_sus_path((struct st_susfs_sus_path __user *)arg); 
+}
+
+int susfs_add_sus_map(void* arg) { 
+    return susfs_add_open_redirect((struct st_susfs_open_redirect __user *)arg); 
+}
+
+int susfs_set_hide_sus_mnts_for_non_su_procs(void* arg) {
+    extern int susfs_set_hide_mnts_for_non_su_procs(int val);
+    return susfs_set_hide_mnts_for_non_su_procs(arg ? 1 : 0);
+}
+
+int susfs_set_avc_log_spoofing(void* arg) {
+    extern int susfs_set_enable_avc_log_spoof(int val);
+    return susfs_set_enable_avc_log_spoof(arg ? 1 : 0);
+}
+
+int susfs_show_version(void) { 
+    pr_info("SuSFS v1.5.5 Integrated Fully\n"); 
+    return 0; 
+}
+
+int susfs_show_variant(void) { 
+    return 0; 
+}
+
+int susfs_get_enabled_features(void) {
+    int features = 0;
+#ifdef CONFIG_KSU_SUSFS_SUS_PATH
+    features |= 1;
+#endif
+#ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
+    features |= 2;
+#endif
+    return features;
+}
+
 void *ksu_input_hook = NULL;
 #endif
 EOF
 fi
+
 if [ -f "supercall/supercall.c" ]; then
   sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#define SUSFS_MAGIC 0x55534653\n#endif\n/' supercall/supercall.c
 fi
