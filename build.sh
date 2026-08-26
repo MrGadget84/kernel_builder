@@ -47,7 +47,7 @@ for toolchain in $1; do
   export CUR_TOOLCHAIN="${toolchain}"
 
   # bash -x "${outside}/toolchains/${toolchain}.sh" build ${defconfig} || exit 1
-  bash -x "${outside}/toolchains/${toolchain}.sh" build ${defconfig} || :
+  KCFLAGS="-DCONFIG_KSU_SUSFS=1" bash -x "${outside}/toolchains/${toolchain}.sh" build ${defconfig} || :
 
   if [ -e "${out_image}" ]; then
     BUILD_END=$(date +"%s")
