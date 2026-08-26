@@ -12,8 +12,33 @@ curl -LSs https://gitlab.com/simonpunk/susfs4ksu/-/raw/kernel-4.14/kernel_patche
 cd drivers/kernelsu
 patch -p1 --fuzz=3 --ignore-whitespace < 10_enable_susfs_for_ksu.patch
 if [ -f "supercall/dispatch.c" ]; then
-  echo "Injecting SuSFS compatibility layers into dispatch.c and supercall.c..."
   sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#define CMD_SUSFS_ADD_SUS_PATH_LOOP 0x9991\n#define CMD_SUSFS_HIDE_SUS_MNTS_FOR_NON_SU_PROCS 0x9992\n#define CMD_SUSFS_ADD_SUS_MAP 0x9993\n#define CMD_SUSFS_ENABLE_AVC_LOG_SPOOFING 0x9994\n#endif\n/' supercall/dispatch.c
+  cat << 'EOF' >> supercall/dispatch.c
+
+#ifdef CONFIG_KSU_SUSFS
+bool is_current_zygote_domain = false;
+int susfs_is_allow_su(void) { return 1; }
+int susfs_add_sus_path_loop(void* arg) { return 0; }
+int susfs_show_version(void) { return 0; }
+int susfs_get_enabled_features(void) { return 0; }
+int susfs_show_variant(void) { return 0; }
+int susfs_set_hide_sus_mnts_for_non_su_procs(void* arg) { return 0; }
+int susfs_add_sus_map(void* arg) { return 0; }
+int susfs_set_avc_log_spoofing(void* arg) { return 0; }
+int susfs_enable_log(void* arg) { return 0; }
+int susfs_start_sdcard_monitor_fn(void) { return 0; }
+int susfs_is_current_proc_umounted(void) { return 0; }
+int susfs_is_current_proc_no_su(void) { return 0; }
+int susfs_set_current_proc_no_su(void) { return 0; }
+int susfs_extra_works(void) { return 0; }
+int susfs_set_current_proc_umounted(void) { return 0; }
+int susfs_set_current_proc_umounted_for_zygote_next(void) { return 0; }
+int susfs_clear_current_proc_no_su(void) { return 0; }
+void *ksu_input_hook = NULL;
+#endif
+EOF
+fi
+if [ -f "supercall/supercall.c" ]; then
   sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#define SUSFS_MAGIC 0x55534653\n#endif\n/' supercall/supercall.c
 fi
 cd ../..
