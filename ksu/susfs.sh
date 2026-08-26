@@ -12,7 +12,7 @@ curl -LSs https://gitlab.com/simonpunk/susfs4ksu/-/raw/kernel-4.14/kernel_patche
 cd drivers/kernelsu
 patch -p1 --fuzz=3 --ignore-whitespace < 10_enable_susfs_for_ksu.patch
 if [ -f "supercall/dispatch.c" ]; then
-  sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#define CMD_SUSFS_ADD_SUS_PATH_LOOP 0x9991\n#define CMD_SUSFS_HIDE_SUS_MNTS_FOR_NON_SU_PROCS 0x9992\n#define CMD_SUSFS_ADD_SUS_MAP 0x9993\n#define CMD_SUSFS_ENABLE_AVC_LOG_SPOOFING 0x9994\n#endif\n/' supercall/dispatch.c
+  sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#define ksu_escape_to_root ksu_escape_to_root_cred\n#define CMD_SUSFS_ADD_SUS_PATH_LOOP 0x9991\n#define CMD_SUSFS_HIDE_SUS_MNTS_FOR_NON_SU_PROCS 0x9992\n#define CMD_SUSFS_ADD_SUS_MAP 0x9993\n#define CMD_SUSFS_ENABLE_AVC_LOG_SPOOFING 0x9994\n#endif\n/' supercall/dispatch.c
   cat << 'EOF' >> supercall/dispatch.c
 
 #ifdef CONFIG_KSU_SUSFS
