@@ -12,7 +12,10 @@ curl -LSs https://gitlab.com/simonpunk/susfs4ksu/-/raw/kernel-4.14/kernel_patche
 cd drivers/kernelsu
 patch -p1 --fuzz=3 --ignore-whitespace < 10_enable_susfs_for_ksu.patch
 if [ -f "supercall/dispatch.c" ]; then
+  echo "Injecting PERFECT SuSFS binary compatibility layers into dispatch.c..."
+  
   sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#define ksu_escape_to_root ksu_escape_to_root_cred\n#define CMD_SUSFS_ADD_SUS_PATH_LOOP 0x9991\n#define CMD_SUSFS_HIDE_SUS_MNTS_FOR_NON_SU_PROCS 0x9992\n#define CMD_SUSFS_ADD_SUS_MAP 0x9993\n#define CMD_SUSFS_ENABLE_AVC_LOG_SPOOFING 0x9994\n#endif\n/' supercall/dispatch.c
+  
   cat << 'EOF' >> supercall/dispatch.c
 
 #ifdef CONFIG_KSU_SUSFS
@@ -38,14 +41,26 @@ int susfs_add_sus_map(void* arg) {
     return susfs_add_open_redirect((struct st_susfs_open_redirect __user *)arg); 
 }
 
-int susfs_set_hide_sus_mnts_for_non_su_procs(void* arg) {
+int susfs_set_hide_mnts_for_non_su_procs(int val) {
     extern int susfs_set_hide_mnts_for_non_su_procs(int val);
-    return susfs_set_hide_mnts_for_non_su_procs(arg ? 1 : 0);
+    return susfs_set_hide_mnts_for_non_su_procs(val);
 }
 
-int susfs_set_avc_log_spoofing(void* arg) {
+int susfs_set_enable_avc_log_spoof(int val) {
     extern int susfs_set_enable_avc_log_spoof(int val);
-    return susfs_set_enable_avc_log_spoof(arg ? 1 : 0);
+    return susfs_set_enable_avc_log_spoof(val);
+}
+
+int susfs_enable_log(int val) {
+    return 0;
+}
+
+int susfs_start_sdcard_monitor_fn(void) {
+    return 0;
+}
+
+int susfs_is_current_proc_umounted(void) {
+    return 0;
 }
 
 int susfs_show_version(void) { 
