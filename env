@@ -31,6 +31,13 @@ export zipper="${outside}/zipper"
 
 export defconfig_file="${maindir}/arch/${ARCH}/configs/${defconfig}"
 
+if [ ! -f "${defconfig_file}" ]; then
+  if [ -f "${maindir}/arch/${ARCH}/configs/mt6768-unifiedk414_lineage_defconfig" ]; then
+    echo "New modular Kbuild detected! Adjusting vars for branch Infinity..."
+    cat "${maindir}/arch/${ARCH}/configs/mt6768-unifiedk414_lineage_defconfig" "${maindir}/arch/${ARCH}/configs/a32.config" > "${maindir}/arch/${ARCH}/configs/a32_lineage_defconfig"
+  fi
+fi
+
 export kernel_head="$(git log --pretty=format:'%h' -1)"
 export kernel_name=$(cat "${defconfig_file}" | grep "CONFIG_LOCALVERSION=" | sed 's/CONFIG_LOCALVERSION="-*//g' | sed 's/"*//g' )
 export kernel_ver="$(make kernelversion)"
