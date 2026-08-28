@@ -25,4 +25,5 @@ fi
 
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-suki${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
+echo -e " \n " >> banner_append
 echo -e " \nReSukiSU Enable! resukisu ver ${KSU_ver}" >> banner_append
