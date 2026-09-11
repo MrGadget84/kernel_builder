@@ -7,14 +7,14 @@ export outside="${maindir}/.."
 source "${outside}/$1env"
 
 curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash
-
-curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/refs/heads/mainline/Patches/" -o susfs_inline.sh
-chmod +x susfs_inline.sh
-curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/refs/heads/mainline/Patches/" -o syscall_hook.sh
-chmod +x syscall_hook.sh
-bash susfs_inline.sh
-bash syscall_hook.sh
-rm susfs_inline.sh syscall_hook.sh
+# integrated SuSFS by JackA1ltman :3
+curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/refs/heads/mainline/Patches/susfs_inline_hook_patches.sh" -o susfs_inline_hook_patches.sh
+chmod +x susfs_inline_hook_patches.sh
+curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/refs/heads/mainline/Patches/syscall_hook_patches.sh" -o syscall_hook_patches.sh
+chmod +x syscall_hook_patches.sh
+bash susfs_inline_hook_patches.sh
+bash syscall_hook_patches.sh
+rm susfs_inline_hook_patches.sh syscall_hook_patches.sh
 
 git add . && git commit -am "drivers: KernelSU"
 SUKI_DIR="drivers/kernelsu"
