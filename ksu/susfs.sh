@@ -7,128 +7,16 @@ export outside="${maindir}/.."
 source "${outside}/$1env"
 
 curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash
+
+curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/refs/heads/mainline/Patches/" -o susfs_inline.sh
+chmod +x susfs_inline.sh
+curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/refs/heads/mainline/Patches/" -o syscall_hook.sh
+chmod +x syscall_hook.sh
+bash susfs_inline.sh
+bash syscall_hook.sh
+rm susfs_inline.sh syscall_hook.sh
+
 git add . && git commit -am "drivers: KernelSU"
-curl -LSs https://gitlab.com/simonpunk/susfs4ksu/-/raw/kernel-4.14/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch -o drivers/kernelsu/10_enable_susfs_for_ksu.patch
-cd drivers/kernelsu
-patch -p1 --fuzz=3 --ignore-whitespace < 10_enable_susfs_for_ksu.patch
-if [ -f "supercall/dispatch.c" ]; then
-  sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#define ksu_escape_to_root ksu_escape_to_root_cred\n#define CMD_SUSFS_ADD_SUS_PATH_LOOP 0x9991\n#define CMD_SUSFS_HIDE_SUS_MNTS_FOR_NON_SU_PROCS 0x9992\n#define CMD_SUSFS_ADD_SUS_MAP 0x9993\n#define CMD_SUSFS_ENABLE_AVC_LOG_SPOOFING 0x9994\n#endif\n/' supercall/dispatch.c
-  
-  cat << 'EOF' >> supercall/dispatch.c
-
-#ifdef CONFIG_KSU_SUSFS
-extern struct cred *ksu_cred;
-
-int ksu_escape_to_root_cred(void) {
-    if (ksu_cred) {
-        commit_creds(ksu_cred);
-        return 0;
-    }
-    return -1;
-}
-
-int susfs_is_allow_su(void) { 
-    return 1; 
-}
-
-int susfs_add_sus_path_loop(void* arg) { 
-    return susfs_add_sus_path((struct st_susfs_sus_path __user *)arg); 
-}
-
-int susfs_add_sus_map(void* arg) { 
-    return susfs_add_open_redirect((struct st_susfs_open_redirect __user *)arg); 
-}
-
-// Реальные низкоуровневые вызовы оригинального SuSFS
-int susfs_set_hide_mnts_for_non_su_procs(int val) {
-    extern int mtk_susfs_set_hide_mnts(int val);
-    return mtk_susfs_set_hide_mnts(val);
-}
-
-int susfs_set_enable_avc_log_spoof(int val) {
-    extern int mtk_susfs_set_avc_spoof(int val);
-    return mtk_susfs_set_avc_spoof(val);
-}
-
-int susfs_set_hide_sus_mnts_for_non_su_procs(void* arg) {
-    return susfs_set_hide_mnts_for_non_su_procs(arg ? 1 : 0);
-}
-
-int susfs_set_avc_log_spoofing(void* arg) {
-    return susfs_set_enable_avc_log_spoof(arg ? 1 : 0);
-}
-
-extern bool is_current_zygote_domain;
-extern bool susfs_is_current_proc_no_su;
-
-int susfs_set_current_proc_no_su(void) {
-    susfs_is_current_proc_no_su = true;
-    return 0;
-}
-
-int susfs_clear_current_proc_no_su(void) {
-    susfs_is_current_proc_no_su = false;
-    return 0;
-}
-
-int susfs_set_current_proc_umounted(void) {
-    extern int mtk_susfs_umount_current(void);
-    return mtk_susfs_umount_current();
-}
-
-int susfs_set_current_proc_umounted_for_zygote_next(void) {
-    is_current_zygote_domain = true;
-    return 0;
-}
-
-int susfs_is_current_proc_umounted(void) {
-    extern int mtk_susfs_check_umount(void);
-    return mtk_susfs_check_umount();
-}
-
-int susfs_enable_log(int val) {
-    extern int mtk_susfs_toggle_log(int val);
-    return mtk_susfs_toggle_log(val);
-}
-
-int susfs_start_sdcard_monitor_fn(void) {
-    extern int mtk_susfs_init_sdcard_mon(void);
-    return mtk_susfs_init_sdcard_mon();
-}
-
-int susfs_extra_works(void) {
-    return 0;
-}
-
-int susfs_show_version(void) { 
-    pr_info("SuSFS v1.5.5 Integrated Fully with ReSukiSU Main\n"); 
-    return 0; 
-}
-
-int susfs_show_variant(void) { 
-    return 0; 
-}
-
-int susfs_get_enabled_features(void) {
-    int features = 0;
-#ifdef CONFIG_KSU_SUSFS_SUS_PATH
-    features |= 1;
-#endif
-#ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
-    features |= 2;
-#endif
-    return features;
-}
-
-void *ksu_input_hook = NULL;
-#endif
-EOF
-fi
-
-if [ -f "supercall/supercall.c" ]; then
-  sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#define SUSFS_MAGIC 0x55534653\n#endif\n/' supercall/supercall.c
-fi
-cd ../..
 SUKI_DIR="drivers/kernelsu"
 KSU_git_ver=$(cd $SUKI_DIR && git rev-list --count HEAD)
 KSU_ver=$KSU_git_ver
@@ -152,6 +40,11 @@ if [[ -d "$patchesdir" ]]; then
 else
   echo "patching ksu failed, the kernel version you want to patch doesnt have patches here yet"
   exit 1
+fi
+
+if [ -f "drivers/kernelsu/Makefile" ]; then
+  echo "Registering nomount.o inside KernelSU Makefile..."
+  echo 'obj-$(CONFIG_NOMOUNT) += nomount.o' >> drivers/kernelsu/Makefile
 fi
 
 if [ -f "KernelSU/kernel/tools/inline_hook_check.mk" ]; then
