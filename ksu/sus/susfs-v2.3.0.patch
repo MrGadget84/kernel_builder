@@ -19,7 +19,7 @@ index 80b743c..44e5219 100644
  #include <linux/bitops.h>
  #include <linux/init_task.h>
  #include <linux/uaccess.h>
- +#define FUSE_SUPER_MAGIC 0x65735546
++#define FUSE_SUPER_MAGIC 0x65735546
 +#define ND_STATE_LOOKUP_LAST 1
 +#define ND_STATE_OPEN_LAST 2
 +#define ND_FLAGS_LOOKUP_LAST 4
