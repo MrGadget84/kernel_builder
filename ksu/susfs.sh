@@ -42,13 +42,6 @@ else
   exit 1
 fi
 
-sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#endif\n/' fs/stat.c
-sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#endif\n/' fs/open.c
-sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#endif\n/' fs/namei.c
-sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#endif\n#include "..\/drivers\/kernelsu\/include\/ksu.h"\n/' fs/namespace.c
-sed -i '1s/^/#ifdef CONFIG_KSU_SUSFS\n#include <linux\/susfs.h>\n#endif\n/' fs/dcache.c
-sed -i '1s/^/#define FUSE_SUPER_MAGIC 0x65735546\n/' fs/namei.c
-
 if [ -f "KernelSU/kernel/tools/inline_hook_check.mk" ]; then
   sed -i 's/\$(error/\$(warning/g' KernelSU/kernel/tools/inline_hook_check.mk
 fi

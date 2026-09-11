@@ -19,6 +19,10 @@ index 80b743c..44e5219 100644
  #include <linux/bitops.h>
  #include <linux/init_task.h>
  #include <linux/uaccess.h>
+ +#define FUSE_SUPER_MAGIC 0x65735546
++#define ND_STATE_LOOKUP_LAST 1
++#define ND_STATE_OPEN_LAST 2
++#define ND_FLAGS_LOOKUP_LAST 4
 +#if defined(CONFIG_KSU_SUSFS_SUS_PATH) || defined(CONFIG_KSU_SUSFS_OPEN_REDIRECT)
 +#include <linux/susfs_def.h>
 +#endif
@@ -519,6 +523,9 @@ index d772fe4..0a2fc6a 100644
  #include <linux/bootmem.h>
  #include <linux/task_work.h>
  #include <linux/sched/task.h>
+ +#define CL_COPY_MNT_NS 1
++#define susfs_is_sdcard_android_data_not_decrypted false
++#include "../drivers/kernelsu/include/ksu.h"
 +#ifdef CONFIG_KSU_SUSFS
 +#include <linux/susfs_def.h>
 +#endif // #ifdef CONFIG_KSU_SUSFS
@@ -1920,6 +1927,8 @@ index 0fda4b6..dd2c150 100644
  #include <linux/uaccess.h>
  #include <asm/unistd.h>
  
++#define STATX_SUS_KSTAT 0x10000000U
++#define STATX_SUS_KSTAT_FUSE 0x20000000U
 +#ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
 +extern bool susfs_is_inode_sus_kstat(struct inode *inode, bool *out_is_fuse);
 +extern void susfs_sus_kstat_spoof_generic_fillattr(struct inode *inode, struct kstat *stat, u32 result_mask);
