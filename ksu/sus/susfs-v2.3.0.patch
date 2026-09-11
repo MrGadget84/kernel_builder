@@ -523,7 +523,7 @@ index d772fe4..0a2fc6a 100644
  #include <linux/bootmem.h>
  #include <linux/task_work.h>
  #include <linux/sched/task.h>
- +#define CL_COPY_MNT_NS 1
++#define CL_COPY_MNT_NS 1
 +#define susfs_is_sdcard_android_data_not_decrypted false
 +#include "../drivers/kernelsu/include/ksu.h"
 +#ifdef CONFIG_KSU_SUSFS
