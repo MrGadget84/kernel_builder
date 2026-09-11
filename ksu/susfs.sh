@@ -42,11 +42,6 @@ else
   exit 1
 fi
 
-if [ -f "drivers/kernelsu/Makefile" ]; then
-  echo "Registering nomount.o inside KernelSU Makefile..."
-  echo 'obj-$(CONFIG_NOMOUNT) += nomount.o' >> drivers/kernelsu/Makefile
-fi
-
 if [ -f "KernelSU/kernel/tools/inline_hook_check.mk" ]; then
   sed -i 's/\$(error/\$(warning/g' KernelSU/kernel/tools/inline_hook_check.mk
 fi
