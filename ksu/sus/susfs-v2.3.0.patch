@@ -2082,7 +2082,6 @@ index e6ceb3e..f7d5ed9 100644
  	return error;
 diff --git a/fs/susfs.c b/fs/susfs.c
 new file mode 100644
-index 0000000..211c9e9
 --- /dev/null
 +++ b/fs/susfs.c
 @@ -0,0 +1,1561 @@
@@ -3647,14 +3646,13 @@ index 0000000..211c9e9
 +/* No module exit is needed becuase it should never be a loadable kernel module */
 +//void __init susfs_exit(void)
 +
-diff --git a/include/linux/susfs.h b/include/linux/susfs.h
+diff --git a/include/linux/susfs_def.h b/include/linux/susfs_def.h
 new file mode 100644
-index 0000000..125ec8f
 --- /dev/null
-+++ b/include/linux/susfs.h
-@@ -0,0 +1,243 @@
-+#ifndef KSU_SUSFS_H
-+#define KSU_SUSFS_H
++++ b/include/linux/susfs_def.h
+@@ -0,0 +1,218 @@
++#ifndef KSU_SUSFS_DEF_H
++#define KSU_SUSFS_DEF_H
 +
 +#include <linux/version.h>
 +#include <linux/types.h>
