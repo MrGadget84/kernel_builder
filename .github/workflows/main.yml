@@ -1,4 +1,4 @@
-name: Building kernel
+name: Blossom Building kernel
 
 on: # [push]
 #  release:
