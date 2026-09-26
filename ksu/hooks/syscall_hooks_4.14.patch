@@ -27,11 +27,8 @@ diff --git a/fs/exec.c b/fs/exec.c
 index 8d5ae3de..9307d129 100644
 --- a/fs/exec.c
 +++ b/fs/exec.c
-@@ -1950,11 +1950,21 @@ void set_dumpable(struct mm_struct *mm, int value)
- 	} while (cmpxchg(&mm->flags, old, new) != old);
- }
- 
-+#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
+@@ -1950,6 +1950,13 @@
+ #if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
 +__attribute__((hot))
 +extern int ksu_handle_execve_sucompat(int *fd, const char __user **filename_user,
 +			       void *__never_use_argv, void *__never_use_envp,
@@ -49,7 +46,7 @@ index 8d5ae3de..9307d129 100644
  	return do_execve(getname(filename), argv, envp);
  }
  
-@@ -1976,6 +1986,9 @@ COMPAT_SYSCALL_DEFINE3(execve, const char __user *, filename,
+@@ -1976,6 +1983,9 @@ COMPAT_SYSCALL_DEFINE3(execve, const char __user *, filename,
  	const compat_uptr_t __user *, argv,
  	const compat_uptr_t __user *, envp)
  {
@@ -64,28 +61,19 @@ index 3b62683f..908ce836 100644
 --- a/fs/open.c
 +++ b/fs/open.c
 @@ -359,6 +359,12 @@ SYSCALL_DEFINE4(fallocate, int, fd, int, mode, loff_t, offset, loff_t, len)
-  * We do this by temporarily clearing all FS-related capabilities and
-  * switching the fsuid/fsgid around to the real ones.
-  */
-+#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
-+__attribute__((hot))
-+extern int ksu_handle_faccessat(int *dfd, const char __user **filename_user,
+ #if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
+ __attribute__((hot))
+ extern int ksu_handle_faccessat(int *dfd, const char __user **filename_user,
 +		               int *mode, int *flags);
 +#endif
 +
  SYSCALL_DEFINE3(faccessat, int, dfd, const char __user *, filename, int, mode)
  {
- 	const struct cred *old_cred;
-@@ -369,6 +375,9 @@ SYSCALL_DEFINE3(faccessat, int, dfd, const char __user *, filename, int, mode)
- 	int res;
- 	unsigned int lookup_flags = LOOKUP_FOLLOW;
- 
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
 +	ksu_handle_faccessat(&dfd, &filename, &mode, NULL);
 +#endif
  	if (mode & ~S_IRWXO)	/* where's F_OK, X_OK, W_OK, R_OK? */
  		return -EINVAL;
- 
 diff --git a/fs/read_write.c b/fs/read_write.c
 index 0da6e4f1..25a850ba 100644
 --- a/fs/read_write.c
@@ -164,13 +152,10 @@ diff --git a/kernel/reboot.c b/kernel/reboot.c
 index 2946ed1d..c8d49cee 100644
 --- a/kernel/reboot.c
 +++ b/kernel/reboot.c
-@@ -277,12 +277,18 @@ static DEFINE_MUTEX(reboot_mutex);
-  *
-  * reboot doesn't sync: do that yourself before calling this.
-  */
-+#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
-+extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);
-+#endif
+@@ -277,6 +277,12 @@ static DEFINE_MUTEX(reboot_mutex);
+ #if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
+ extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);
+ #endif
  SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
  		void __user *, arg)
  {
@@ -188,13 +173,10 @@ index 195f3c87..bbd3e446 100644
 --- a/kernel/sys.c
 +++ b/kernel/sys.c
 @@ -595,6 +595,10 @@ SYSCALL_DEFINE1(setuid, uid_t, uid)
-  * This function implements a generic ability to update ruid, euid,
-  * and suid.  This allows you to implement the 4.4 compatible seteuid().
-  */
-+#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
-+extern int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid);
-+#endif
-+
+ #if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
+ extern int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid);
+ #endif
+ 
  SYSCALL_DEFINE3(setresuid, uid_t, ruid, uid_t, euid, uid_t, suid)
  {
  	struct user_namespace *ns = current_user_ns();
@@ -204,9 +186,8 @@ index 195f3c87..bbd3e446 100644
  
 +#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
 +	if (ksu_handle_setresuid(ruid, euid, suid)) {
-+		pr_info("Something wrong with ksu_handle_setresuid()\\n");
++		pr_info("Something wrong with ksu_handle_setresuid()\n");
 +	}
 +#endif
  	if ((ruid != (uid_t) -1) && !uid_valid(kruid))
  		return -EINVAL;
- 
