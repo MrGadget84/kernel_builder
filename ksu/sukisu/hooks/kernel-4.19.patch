@@ -130,7 +130,7 @@ diff --git a/kernel/reboot.c b/kernel/reboot.c
 index 921ef0527..aa72efc63 100644
 --- a/kernel/reboot.c
 +++ b/kernel/reboot.c
-@@ -317,6 +317,11 @@ DEFINE_MUTEX(system_transition_mutex);
+@@ -305,6 +305,11 @@
   *
   * reboot doesn't sync: do that yourself before calling this.
   */
@@ -142,12 +142,12 @@ index 921ef0527..aa72efc63 100644
  SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
  		void __user *, arg)
  {
-@@ -324,6 +329,10 @@ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
+@@ -312,6 +317,10 @@
  	char buffer[256];
  	int ret = 0;
  
 +#ifdef CONFIG_KSU_MANUAL_HOOK
-+        ksu_handle_sys_reboot(magic1, magic2, cmd, &arg);
++	ksu_handle_sys_reboot(magic1, magic2, cmd, &arg);
 +#endif
 +
  	if (check_poweroff_charger_mode()){
