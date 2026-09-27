@@ -126,7 +126,7 @@ index 0ca02231a848..84ace88c0ad5 100644
  	struct common_audit_data stack_data;
  	struct selinux_audit_data sad;
  
-+#if defined(CONFIG_KSU) && !defined(CONFIG_KPROBES)
++#ifdef CONFIG_KSU
 +	extern void ksu_slow_avc_audit(u32 *);
 +	ksu_slow_avc_audit(&tsid);
 +#endif
