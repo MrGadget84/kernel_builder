@@ -6,13 +6,14 @@ export maindir="$(pwd)"
 export outside="${maindir}/.."
 source "${outside}/$1env"
 
-curl -LSs "https://raw.githubusercontent.com/White-Society/WhiteSU/dev/kernel/setup.sh" | bash -s legacy_susfs
+curl -LSs "https://raw.githubusercontent.com/White-Society/WhiteSU/dev/kernel/setup.sh" | bash -s legacy
 git add . && git commit -am "drivers: KernelSU"
 KSU_git_ver=$(cd WhiteSU && git rev-list --count HEAD)
 KSU_ver=$KSU_git_ver
+patchesdir="$outside/ksu/ksu-next/patches/"
+suspatchesdir="$outside/ksu/ksu-next/sus_patches/"
 
 echo 'CONFIG_KSU_EXTRAS=y' >> "${defconfig_file}"
-patchesdir="$outside/ksu/ksu-next/patches/"
 if [[ -d "$patchesdir" ]]; then
   for patch_file in "$patchesdir"/*.patch ; do
     git am "$patch_file"
