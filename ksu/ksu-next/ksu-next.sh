@@ -22,7 +22,17 @@ else
   exit 1
 fi
 
+if [[ -d "$suspatchesdir" ]]; then
+  for patch_file in "$suspatchesdir"/*.patch ; do
+    git am "$patch_file"
+  done
+else
+  echo "patching ksu susfs failed, the kernel version you want to patch doesnt have patches here yet"
+  exit 1
+fi
+
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ks${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
 echo -e " \nincludes WhiteSU, ver ${KSU_ver}" >> banner_append
+echo -e " \nincludes SuSFS v2.2" >> banner_append
 echo -e " \nincludes NoMount v2.0.0" >> banner_append
