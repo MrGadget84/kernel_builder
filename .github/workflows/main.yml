@@ -36,15 +36,15 @@ on: # [push]
       ZREPO:
         description: 'zipper repo'
         required: true
-        default: 'https://github.com/MrGadget84/AnyKernel3_s3ve3g'
+        default: 'https://github.com/MrGadget84/AnyKernel3_samsung'
       ZBRANCH:
         description: 'zipper branch'
         required: true
-        default: 'main'
+        default: 's3ve3g'
       KSU:
         description: 'if dont want ksu then leave blank'
         required: false
-        default: ''
+        default: 'both'
       TG_RECIPENT:
         description: 'group id'
         required: true
