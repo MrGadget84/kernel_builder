@@ -15,10 +15,10 @@ export KBUILD_BUILD_HOST="github"
 export defconfig="blossom_defconfig"
 
 if [[ -z "$zipper_repo" ]]; then
-  export zipper_repo="https://github.com/MrGadget84/AnyKernel3_blossom"
+  export zipper_repo="https://github.com/MrGadget84/AnyKernel3_xiaomi"
 fi
 if [[ -z "$zipper_branch" ]]; then
-  export zipper_branch=main
+  export zipper_branch=dipper
 fi
 
 export out_image="${maindir}/out/arch/${ARCH}/boot/Image.gz"
