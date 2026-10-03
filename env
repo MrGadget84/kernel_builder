@@ -12,7 +12,7 @@ export SUBARCH="arm64"
 export KBUILD_BUILD_USER="MrGadget84"
 export KBUILD_BUILD_HOST="github"
 
-export defconfig="blossom_defconfig"
+export defconfig="sdm845-perf_defconfig"
 
 if [[ -z "$zipper_repo" ]]; then
   export zipper_repo="https://github.com/MrGadget84/AnyKernel3_xiaomi"
@@ -29,7 +29,12 @@ export zipper="${outside}/zipper"
 
 #
 
-export defconfig_file="${maindir}/arch/${ARCH}/configs/${defconfig}"
+export defconfig_file="${maindir}/arch/${ARCH}/configs/vendor/${defconfig}"
+
+cat "${maindir}/arch/${ARCH}/configs/vendor/sdm845-perf_defconfig" "${maindir}/arch/${ARCH}/configs/vendor/xiaomi/dipper.config" > "${maindir}/arch/${ARCH}/configs/vendor/temp_defconfig"
+mv "${maindir}/arch/${ARCH}/configs/vendor/temp_defconfig" "${maindir}/arch/${ARCH}/configs/vendor/sdm845-perf_defconfig"
+
+
 
 export kernel_head="$(git log --pretty=format:'%h' -1)"
 export kernel_name=$(cat "${defconfig_file}" | grep "CONFIG_LOCALVERSION=" | sed 's/CONFIG_LOCALVERSION="-*//g' | sed 's/"*//g' )
