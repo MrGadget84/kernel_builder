@@ -44,7 +44,7 @@ on: # [push]
       KSU:
         description: 'if dont want ksu then leave blank'
         required: false
-        default: 'baka'
+        default: 'ksu'
       TG_RECIPENT:
         description: 'group id'
         required: true
@@ -127,14 +127,14 @@ jobs:
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
-              "baka" )
+              "ksu" )
                 bash ../tg_utils.sh msg "gh $RUN_NUM: ReSukiSU patching enabled, patching"
                 bash ../ksu/baka.sh
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
-              "white" )
-                bash ../tg_utils.sh msg "gh $RUN_NUM: WhiteSU patching enabled, patching"
+              "susfs" )
+                bash ../tg_utils.sh msg "gh $RUN_NUM: WhiteSU & SuSFS patching enabled, patching"
                 bash ../ksu/white.sh
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"

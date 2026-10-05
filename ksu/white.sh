@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# WhiteSU New
+# WhiteSU & SuSFS New
 
 export maindir="$(pwd)"
 export outside="${maindir}/.."
@@ -14,7 +14,6 @@ KSU_ver=$KSU_git_ver
 patchesdir="$outside/ksu/hooks/"
 suspatchesdir="$outside/ksu/sus/"
 
-echo 'CONFIG_KSU_EXTRAS=y' >> "${defconfig_file}"
 if [[ -d "$patchesdir" ]]; then
   for patch_file in "$patchesdir"/*.patch ; do
     git am "$patch_file"
@@ -24,6 +23,7 @@ else
   exit 1
 fi
 
+echo 'CONFIG_KSU_SUSFS=y' >> "${defconfig_file}"
 if [[ -d "$suspatchesdir" ]]; then
   for patch_file in "$suspatchesdir"/*.patch ; do
     git am "$patch_file"

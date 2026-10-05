@@ -13,7 +13,6 @@ KSU_git_ver=$(cd $SUKI_DIR && git rev-list --count HEAD)
 KSU_ver=$KSU_git_ver
 
 patchesdir="$outside/ksu/hooks/"
-suspatchesdir="$outside/ksu/sus/"
 
 if [[ -d "$patchesdir" ]]; then
   for patch_file in "$patchesdir"/*.patch ; do
@@ -24,8 +23,7 @@ else
   exit 1
 fi
 
-sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-baka${KSU_ver}\"/" "${defconfig_file}"
+sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ksu${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
 echo -e " \nincludes BakaSU, ver ${KSU_ver}" >> banner_append
-echo -e " \nincludes SuSFS" >> banner_append
 echo -e " \nincludes NoMount" >> banner_append
