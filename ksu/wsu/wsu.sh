@@ -1,17 +1,18 @@
 #!/bin/bash
 #
-# xoposho
+# WhiteSU
 
 export maindir="$(pwd)"
 export outside="${maindir}/.."
 source "${outside}/$1env"
 
-curl -LSs "https://raw.githubusercontent.com/RapliVx/KernelSU/refs/heads/master/kernel/setup.sh" | bash -s master
+curl -LSs "https://raw.githubusercontent.com/White-Society/WhiteSU/Stable/kernel/setup.sh" | bash 
 git add . && git commit -am "drivers: KernelSU"
 KSU_git_ver=$(cd KernelSU && git rev-list --count HEAD)
-KSU_ver=$(($KSU_git_ver + 10000 + 200))
+KSU_ver=$KSU_git_ver
 
-patchesdir="$outside/ksu/mambo/patch/"
+echo 'CONFIG_KSU_EXTRAS=y' >> "${defconfig_file}"
+patchesdir="$outside/ksu/wsu/patches/"
 if [[ -d "$patchesdir" ]]; then
   for patch_file in "$patchesdir"/*.patch ; do
     git am "$patch_file"
@@ -21,8 +22,7 @@ else
   exit 1
 fi
 
-sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-msu${KSU_ver}\"/" "${defconfig_file}"
-
+sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ks${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
-
-echo -e " \nMamboSU Version Enable, ksu ver ${KSU_ver}" >> banner_append
+echo -e " \nincludes WhiteSU, ver ${KSU_ver}" >> banner_append
+echo -e " \nincludes NoMount v2.0.0" >> banner_append
