@@ -44,7 +44,7 @@ on: # [push]
       KSU:
         description: 'if dont want ksu then leave blank'
         required: false
-        default: 'ksu-next'
+        default: 'wsu'
       TG_RECIPENT:
         description: 'group id'
         required: true
@@ -155,9 +155,9 @@ jobs:
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
-                "msu" )
-                bash ../tg_utils.sh msg "gh $RUN_NUM: MamboSU patching enabled, patching"
-                bash ../ksu/mambo/msu.sh
+                "wsu" )
+                bash ../tg_utils.sh msg "gh $RUN_NUM: WhiteSU patching enabled, patching"
+                bash ../ksu/wsu/wsu.sh
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
