@@ -6,7 +6,7 @@ export maindir="$(pwd)"
 export outside="${maindir}/.."
 source "${outside}/$1env"
 
-curl -LSs "https://raw.githubusercontent.com/White-Society/WhiteSU/Stable/kernel/setup.sh" | bash 
+curl -LSs "https://raw.githubusercontent.com/White-Society/KernelSU/master/kernel/setup.sh" | bash -s master
 ln -sf WhiteSU KernelSU
 git add . && git commit -am "drivers: KernelSU"
 KSU_git_ver=$(cd WhiteSU && git rev-list --count HEAD)
@@ -25,5 +25,5 @@ fi
 
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ks${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
-echo -e " \nincludes WhiteSU, ver ${KSU_ver}" >> banner_append
+echo -e " \nincludes Root My WKP ${KSU_ver}" >> banner_append
 echo -e " \nincludes NoMount v2.0.0" >> banner_append
