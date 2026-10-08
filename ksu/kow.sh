@@ -6,7 +6,7 @@ export maindir="$(pwd)"
 export outside="${maindir}/.."
 source "${outside}/$1env"
 
-curl -LSs "https://raw.githubusercontent.com/KOWX712/KernelSU/master/kernel/setup.sh" | bash -s master
+curl -LSs "https://raw.githubusercontent.com/White-Society/KernelSU/master/kernel/setup.sh" | bash -s master
 git add . && git commit -am "drivers: KernelSU"
 KOW_DIR="drivers/kernelsu"
 KSU_git_ver=$(cd $KOW_DIR && git rev-list --count HEAD)
@@ -36,6 +36,6 @@ fi
 
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ksu${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
-echo -e " \nincludes KowSU, ver ${KSU_ver}" >> banner_append
-#echo -e " \nincludes SuSFS" >> banner_append
+echo -e " \nincludes Root My WKP ${KSU_ver}" >> banner_append
 echo -e " \nincludes NoMount" >> banner_append
+#echo -e " \nincludes SuSFS" >> banner_append
