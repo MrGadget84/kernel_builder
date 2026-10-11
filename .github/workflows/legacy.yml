@@ -23,8 +23,11 @@ on: # [push]
         default: 'https://github.com/MrGadget84/white_kernel_samsung_mt6768'
       KBRANCH:
         description: 'kernel branch'
-        required: true
-        default: 'legacy'
+        type: choice
+        options:
+          - infinity
+          - legacy
+        default: legacy
       NOTES:
         description: 'notes to print out'
         required: false
@@ -45,6 +48,15 @@ on: # [push]
         description: 'if dont want ksu then leave blank'
         required: false
         default: 'kow'
+      KSU:
+        description: 'if dont want ksu then leave blank'
+        type: choice
+        options:
+          - non-root
+          - both
+          - baka
+          - kow
+        default: kow
       TG_RECIPENT:
         description: 'group id'
         required: true
@@ -139,7 +151,7 @@ jobs:
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
-              "" )
+              "non-root" )
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;

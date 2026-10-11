@@ -16,7 +16,7 @@ patchesdir="$outside/ksu/hooks/"
 #suspatchesdir="$outside/ksu/sus/"
 
 if [[ -d "$patchesdir" ]]; then
-  for patch_file in "$patchesdir"/*.patch ; do
+  for patch_file in "$patchesdir"/kowsu-kernel-4.14.patch ; do
     git am "$patch_file"
   done
 else
@@ -37,5 +37,5 @@ fi
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ksu${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
 echo -e " \nincludes Root My WKP ${KSU_ver}" >> banner_append
-echo -e " \nincludes NoMount" >> banner_append
+echo -e " \nincludes NoMount v2.1.0" >> banner_append
 #echo -e " \nincludes SuSFS" >> banner_append

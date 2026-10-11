@@ -15,7 +15,7 @@ KSU_ver=$KSU_git_ver
 patchesdir="$outside/ksu/hooks/"
 
 if [[ -d "$patchesdir" ]]; then
-  for patch_file in "$patchesdir"/*.patch ; do
+  for patch_file in "$patchesdir"/suki-kernel-4.14.patch ; do
     patch -p1 < "$patch_file"
   done
 else
@@ -26,4 +26,4 @@ fi
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ksu${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
 echo -e " \nincludes BakaSU, ver ${KSU_ver}" >> banner_append
-echo -e " \nincludes NoMount" >> banner_append
+echo -e " \nincludes NoMount v2.1.0" >> banner_append
