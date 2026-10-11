@@ -1,4 +1,4 @@
-name: Building legacy branch
+name: Blossom Building kernel
 
 on: # [push]
 #  release:
@@ -44,10 +44,6 @@ on: # [push]
         description: 'zipper branch'
         required: true
         default: 'a325f'
-      KSU:
-        description: 'if dont want ksu then leave blank'
-        required: false
-        default: 'kow'
       KSU:
         description: 'if dont want ksu then leave blank'
         type: choice
