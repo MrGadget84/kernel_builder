@@ -27,6 +27,7 @@ on: # [push]
         options:
           - infinity
           - legacy
+          - dev
         default: legacy
       NOTES:
         description: 'notes to print out'

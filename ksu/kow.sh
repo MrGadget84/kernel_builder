@@ -12,17 +12,17 @@ KOW_DIR="drivers/kernelsu"
 KSU_git_ver=$(cd $KOW_DIR && git rev-list --count HEAD)
 KSU_ver=$KSU_git_ver
 
-patchesdir="$outside/ksu/hooks/"
+#patchesdir="$outside/ksu/hooks/"
 #suspatchesdir="$outside/ksu/sus/"
 
-if [[ -d "$patchesdir" ]]; then
-  for patch_file in "$patchesdir"/kowsu-kernel-4.14.patch ; do
-    git am "$patch_file"
-  done
-else
-  echo "patching ksu failed, the kernel version you want to patch doesnt have patches here yet"
-  exit 1
-fi
+#if [[ -d "$patchesdir" ]]; then
+#  for patch_file in "$patchesdir"/kowsu-kernel-4.14.patch ; do
+#    git am "$patch_file"
+#  done
+#else
+#  echo "patching ksu failed, the kernel version you want to patch doesnt have patches here yet"
+#  exit 1
+#fi
 
 #echo 'CONFIG_KSU_SUSFS=y' >> "${defconfig_file}"
 #if [[ -d "$suspatchesdir" ]]; then
