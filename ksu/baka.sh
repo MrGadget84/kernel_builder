@@ -6,7 +6,7 @@ export maindir="$(pwd)"
 export outside="${maindir}/.."
 source "${outside}/$1env"
 
-curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s builtin
+curl -LSs "https://raw.githubusercontent.com/Baka-SU/BakaSU/main/kernel/setup.sh" | bash
 git add . && git commit -am "drivers: KernelSU"
 SUKI_DIR="drivers/kernelsu"
 KSU_git_ver=$(cd $SUKI_DIR && git rev-list --count HEAD)
@@ -14,10 +14,6 @@ KSU_ver=$KSU_git_ver
 
 patchesdir="$outside/ksu/hooks/"
 
-echo 'CONFIG_KSU_MULTI_MANAGER_SUPPORT=y' >> "${defconfig_file}"
-echo 'CONFIG_KPM=y' >> "${defconfig_file}"
-echo 'CONFIG_KALLSYMS=y' >> "${defconfig_file}"
-echo 'CONFIG_KALLSYMS_ALL=y' >> "${defconfig_file}"
 if [[ -d "$patchesdir" ]]; then
   for patch_file in "$patchesdir"/suki-kernel-4.14.patch ; do
     patch -p1 < "$patch_file"
@@ -29,5 +25,5 @@ fi
 
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ksu${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
-echo -e " \nincludes SukiSU Ultra, ver ${KSU_ver}" >> banner_append
+echo -e " \nincludes BakaSU, ver ${KSU_ver}" >> banner_append
 echo -e " \nincludes NoMount v2.1.0" >> banner_append
