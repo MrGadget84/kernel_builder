@@ -13,16 +13,16 @@ KSU_git_ver=$(cd $WSU_DIR && git rev-list --count HEAD)
 KSU_ver=$KSU_git_ver
 
 echo 'CONFIG_KSU_EXTRAS=y' >> "${defconfig_file}"
-echo 'CONFIG_KSU_HACK_ARM64_BRANCH_LINK=y' >> "${defconfig_file}"
-#patchesdir="$outside/ksu/wsu/patches/"
-#if [[ -d "$patchesdir" ]]; then
-#  for patch_file in "$patchesdir"/*.patch ; do
-#    git am "$patch_file"
-#  done
-#else
-#  echo "patching ksu failed, the kernel version you want to patch doesnt have patches here yet"
-#  exit 1
-#fi
+# echo 'CONFIG_KSU_HACK_ARM64_BRANCH_LINK=y' >> "${defconfig_file}"
+patchesdir="$outside/ksu/wsu/patches/"
+if [[ -d "$patchesdir" ]]; then
+  for patch_file in "$patchesdir"/*.patch ; do
+    git am "$patch_file"
+  done
+else
+  echo "patching ksu failed, the kernel version you want to patch doesnt have patches here yet"
+  exit 1
+fi
 
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ks${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
