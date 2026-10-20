@@ -36,7 +36,7 @@ on: # [push]
       ZREPO:
         description: 'zipper repo'
         required: true
-        default: 'https://github.com/MrGadget84/AnyKernel3_xiaomi'
+        default: 'https://github.com/MrGadget84/AnyKernel3'
       ZBRANCH:
         description: 'zipper branch'
         required: true
