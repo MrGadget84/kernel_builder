@@ -8,8 +8,7 @@ source "${outside}/$1env"
 
 curl -LSs "https://raw.githubusercontent.com/White-Society/KernelSU/master/kernel/setup.sh" | bash -s master
 git add . && git commit -am "drivers: KernelSU"
-WSU_DIR="drivers/kernelsu"
-KSU_git_ver=$(cd $WSU_DIR && git rev-list --count HEAD)
+KSU_git_ver=$(cd KernelSU && git rev-list --count HEAD)
 KSU_ver=$KSU_git_ver
 
 echo 'CONFIG_KSU_EXTRAS=y' >> "${defconfig_file}"
