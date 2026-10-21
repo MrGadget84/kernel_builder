@@ -40,7 +40,7 @@ on: # [push]
       ZREPO:
         description: 'zipper repo'
         required: true
-        default: 'https://github.com/MrGadget84/AnyKernel3_samsung'
+        default: 'https://github.com/MrGadget84/AnyKernel3'
       ZBRANCH:
         description: 'zipper branch'
         required: true
@@ -53,7 +53,7 @@ on: # [push]
           - both
           - baka
           - kow
-        default: kow
+        default: baka
       TG_RECIPENT:
         description: 'group id'
         required: true
