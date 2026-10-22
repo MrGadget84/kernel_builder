@@ -6,7 +6,7 @@ export maindir="$(pwd)"
 export outside="${maindir}/.."
 source "${outside}/$1env"
 
-curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash
+curl -LSs "https://raw.githubusercontent.com/MrGadget84/ReSukiSU-Old/main/kernel/setup.sh" | bash
 git add . && git commit -am "drivers: KernelSU"
 SUKI_DIR="drivers/kernelsu"
 KSU_git_ver=$(cd $SUKI_DIR && git rev-list --count HEAD)
@@ -35,4 +35,6 @@ fi
 
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-suki${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
-echo -e " \nReSukiSU Enable! resukisu ver ${KSU_ver}" >> banner_append
+echo -e " \nincludes ReSukiSU ${KSU_ver} fork" >> banner_append
+echo -e " \nReSukiSU Supported Unofficial Manager: ReSukiSU, WhiteSU, BakaSU, KernelSU, SukiSU-Ultra" >> banner_append
+echo -e " \nincludes NoMount v2.1.1" >> banner_append
