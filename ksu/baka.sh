@@ -26,4 +26,5 @@ fi
 sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ksu${KSU_ver}\"/" "${defconfig_file}"
 echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
 echo -e " \nincludes ReSukiSU ${KSU_ver} fork" >> banner_append
+echo -e " \nReSukiSU Supported Unofficial Manager: ReSukiSU, WhiteSU, BakaSU, KernelSU, SukiSU-Ultra, WildKSU" >> banner_append
 echo -e " \nincludes NoMount v2.1.1" >> banner_append
