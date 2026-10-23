@@ -20,7 +20,7 @@ on: # [push]
       KREPO:
         description: 'kernel repo'
         required: true
-        default: 'https://github.com/MrGadget84/white_kernel_samsung_mt6768'
+        default: 'https://github.com/MrGadget84/white_kernel_samsung_a325f'
       KBRANCH:
         description: 'kernel branch'
         type: choice
