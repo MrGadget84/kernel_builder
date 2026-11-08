@@ -25,10 +25,10 @@ on: # [push]
         description: 'kernel branch'
         type: choice
         options:
-          - infinity
-          - legacy
+          - A17
+          - A16
           - dev
-        default: legacy
+        default: A17
       NOTES:
         description: 'notes to print out'
         required: false
