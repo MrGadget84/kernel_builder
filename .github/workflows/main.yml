@@ -47,8 +47,12 @@ on: # [push]
         default: 'blossom'
       KSU:
         description: 'if dont want ksu then leave blank'
-        required: false
-        default: 'suki'
+        type: choice
+        options:
+          - non-root
+          - both
+          - baka
+          - kow
       DS:
         description: "Droidspaces"
         type: boolean
@@ -149,13 +153,13 @@ jobs:
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
-              "suki" )
+              "baka" )
                 bash ../tg_utils.sh msg "gh $RUN_NUM: ReSukiSU patching enabled, patching"
                 bash ../ksu/sukisu/sukisu.sh
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
-              "" )
+              "non-root" )
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
