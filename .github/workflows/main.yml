@@ -29,6 +29,7 @@ on: # [push]
         options:
           - A17
           - A16
+          - infinity
           - common
         default: common
       KERNEL_PROFILE:
