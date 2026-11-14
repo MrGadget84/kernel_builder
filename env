@@ -12,7 +12,7 @@ export SUBARCH="arm64"
 export KBUILD_BUILD_USER="MrGadget84"
 export KBUILD_BUILD_HOST="github"
 
-export defconfig="a32_lumi_defconfig"
+export defconfig="a32_lineage_defconfig"
 
 if [[ -z "$zipper_repo" ]]; then
   export zipper_repo="https://github.com/MrGadget84/AnyKernel3"
@@ -32,28 +32,9 @@ export zipper="${outside}/zipper"
 export defconfig_file="${maindir}/arch/${ARCH}/configs/${defconfig}"
 
 if [ ! -f "${defconfig_file}" ]; then
-  config_dir="${maindir}/arch/${ARCH}/configs"
-  base_config="${config_dir}/mt6768_slm_defconfig"
-  device_config="${config_dir}/a32.config"
-  battery_config="${config_dir}/battery.config"
-
-  if [ -f "${base_config}" ] && [ -f "${device_config}" ] && [ -f "${battery_config}" ]; then
-    echo "LumiROM modular Kbuild detected! Generating A32 defconfig..."
-    cat "${base_config}" "${device_config}" "${battery_config}" > "${defconfig_file}"
-
-    cat >> "${defconfig_file}" <<'EOF'
-CONFIG_ALWAYS_ENFORCE=y
-# CONFIG_ALWAYS_PERMISSIVE is not set
-
-CONFIG_MTK_GPU_VERSION="mali bifrost r25p0"
-
-# BTF is disabled because pahole 1.32 cannot generate BTF for this 4.14 kernel.
-# CONFIG_DEBUG_INFO_BTF is not set
-# CONFIG_DEBUG_INFO_BTF_MODULES is not set
-EOF
-  else
-    echo "error: required LumiROM A32 config files are missing" >&2
-    exit 1
+  if [ -f "${maindir}/arch/${ARCH}/configs/mt6768-unifiedk414_lineage_defconfig" ]; then
+    echo "New modular Kbuild detected! Adjusting vars for branch Infinity..."
+    cat "${maindir}/arch/${ARCH}/configs/mt6768-unifiedk414_lineage_defconfig" "${maindir}/arch/${ARCH}/configs/a32.config" > "${maindir}/arch/${ARCH}/configs/a32_lineage_defconfig"
   fi
 fi
 
