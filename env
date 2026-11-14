@@ -5,14 +5,51 @@
 export maindir="$(pwd)"
 export outside="${maindir}/.."
 
-#
-
 export ARCH="arm64"
 export SUBARCH="arm64"
 export KBUILD_BUILD_USER="MrGadget84"
 export KBUILD_BUILD_HOST="github"
 
-export defconfig="a32_lineage_defconfig"
+export CONFIG_DIR="${maindir}/arch/${ARCH}/configs"
+
+if [[ -f "${CONFIG_DIR}/a32_lineage_defconfig" ]]; then
+  export config_mode="AOSP"
+  export defconfig="a32_lineage_defconfig"
+  export defconfig_file="${CONFIG_DIR}/${defconfig}"
+  export KERNEL_PROFILE="${KERNEL_PROFILE:-Stock}"
+elif [[ -f "${CONFIG_DIR}/mt6768_slm_defconfig" && -f "${CONFIG_DIR}/a32_00_defconfig" && -f "${CONFIG_DIR}/a32.config" && -f "${CONFIG_DIR}/ksu.config" ]]; then
+  export config_mode="LumiROM"
+  export defconfig="LumiROM modular"
+  export defconfig_file="${CONFIG_DIR}/a32.config"
+
+  case "${KERNEL_PROFILE:-Stock}" in
+    Battery|battery)
+      export KERNEL_PROFILE="Battery"
+      export profile_config="${CONFIG_DIR}/battery.config"
+      ;;
+    Performance|performance|perf)
+      export KERNEL_PROFILE="Performance"
+      export profile_config="${CONFIG_DIR}/perf.config"
+      ;;
+    Stock|stock|"")
+      export KERNEL_PROFILE="Stock"
+      export profile_config=""
+      ;;
+    *)
+      echo "Error: unsupported KERNEL_PROFILE '${KERNEL_PROFILE}'. Choose Battery, Performance or Stock."
+      exit 1
+      ;;
+  esac
+
+  if [[ -n "${profile_config}" && ! -f "${profile_config}" ]]; then
+    echo "Error: selected profile config not found: ${profile_config}"
+    exit 1
+  fi
+else
+  echo "Error: unsupported kernel config layout."
+  echo "Expected a32_lineage_defconfig (AOSP) or LumiROM modular A32 config files."
+  exit 1
+fi
 
 if [[ -z "$zipper_repo" ]]; then
   export zipper_repo="https://github.com/MrGadget84/AnyKernel3"
@@ -24,22 +61,10 @@ fi
 export out_image="${maindir}/out/arch/${ARCH}/boot/Image.gz"
 export out_dtb="${maindir}/out/arch/${ARCH}/boot/dtb"
 export out_dtbo="${maindir}/out/arch/${ARCH}/boot/dtbo.img"
-
 export zipper="${outside}/zipper"
 
-#
-
-export defconfig_file="${maindir}/arch/${ARCH}/configs/${defconfig}"
-
-if [ ! -f "${defconfig_file}" ]; then
-  if [ -f "${maindir}/arch/${ARCH}/configs/mt6768-unifiedk414_lineage_defconfig" ]; then
-    echo "New modular Kbuild detected! Adjusting vars for branch Infinity..."
-    cat "${maindir}/arch/${ARCH}/configs/mt6768-unifiedk414_lineage_defconfig" "${maindir}/arch/${ARCH}/configs/a32.config" > "${maindir}/arch/${ARCH}/configs/a32_lineage_defconfig"
-  fi
-fi
-
 export kernel_head="$(git log --pretty=format:'%h' -1)"
-export kernel_name=$(cat "${defconfig_file}" | grep "CONFIG_LOCALVERSION=" | sed 's/CONFIG_LOCALVERSION="-*//g' | sed 's/"*//g' )
+export kernel_name="$(sed -n 's/^CONFIG_LOCALVERSION="-*\(.*\)"/\1/p' "${defconfig_file}" | head -n1)"
 export kernel_ver="$(make kernelversion)"
 export TIME=$(date +"%y%m%d-%H%M")
 
