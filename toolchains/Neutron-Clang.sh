@@ -32,8 +32,8 @@ case "$1" in
     make -j"${NJOBS}" O=out \
       ARCH=arm64 SUBARCH=arm64 \
       CROSS_COMPILE="aarch64-linux-gnu-" \
-      CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
-      CROSS_COMPILE_COMPAT="arm-linux-gnueabi-" \
+      CROSS_COMPILE_ARM32="arm-linux-gnu-" \
+      CROSS_COMPILE_COMPAT="arm-linux-gnu-" \
       CLANG_TRIPLE="aarch64-linux-gnu-" \
       CC=clang \
       LD=ld.lld \
