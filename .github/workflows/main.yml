@@ -14,9 +14,9 @@ on: # [push]
   workflow_dispatch:
     inputs:
       COMPILER:
-        description: 'compilers used'
+        description: 'compiler used'
         required: true
-        default: 'AOSP-Clang-11'
+        default: 'Neutron-Clang'
       KREPO:
         description: 'kernel repo'
         type: choice
@@ -69,7 +69,7 @@ on: # [push]
         required: true
         default: '-1003050733874'
       CONTAINER:
-        description: 'if you know you know'
+        description: 'if you know if you know'
         required: true
         default: 'fedora:40'
 
