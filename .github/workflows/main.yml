@@ -27,10 +27,8 @@ on: # [push]
         description: 'kernel branch'
         type: choice
         options:
-          - A17
           - A16
           - infinity
-          - common
         default: common
       KERNEL_PROFILE:
         description: 'LumiROM kernel configuration profile (ignored for AOSP)'
