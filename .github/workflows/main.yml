@@ -19,16 +19,18 @@ on: # [push]
         default: 'AOSP-Clang-11'
       KREPO:
         description: 'kernel repo'
-        required: true
-        default: 'https://github.com/MrGadget84/white_kernel_samsung_a325f'
+        type: choice
+        options:
+          - https://github.com/MrGadget84/white_kernel_samsung_mt6768_lumirom
+          - https://github.com/MrGadget84/white_kernel_samsung_mt6768_aosp
       KBRANCH:
         description: 'kernel branch'
         type: choice
         options:
           - A17
           - A16
-          - dev
-        default: A17
+          - common
+        default: common
       NOTES:
         description: 'notes to print out'
         required: false
@@ -52,7 +54,7 @@ on: # [push]
           - non-root
           - both
           - baka
-          - kow
+          - wsu
         default: baka
       TG_RECIPENT:
         description: 'group id'
@@ -137,14 +139,14 @@ jobs:
                 bash ../build.sh "$COMPILERS"
               ;;
               "baka" )
-                bash ../tg_utils.sh msg "gh $RUN_NUM: ReSukiSU patching enabled, patching"
+                bash ../tg_utils.sh msg "gh $RUN_NUM: MySukiSU patching enabled, patching"
                 bash ../ksu/baka.sh
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
-              "kow" )
-                bash ../tg_utils.sh msg "gh $RUN_NUM: KowSU patching enabled, patching"
-                bash ../ksu/kow.sh
+              "wsu" )
+                bash ../tg_utils.sh msg "gh $RUN_NUM: WhiteSU patching enabled, patching"
+                bash ../ksu/wsu.sh
                 bash ../tg_utils.sh msg "gh $RUN_NUM: running compilation script(s): $COMPILERS"
                 bash ../build.sh "$COMPILERS"
               ;;
