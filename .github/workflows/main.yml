@@ -29,7 +29,7 @@ on: # [push]
         options:
           - A16
           - infinity
-        default: common
+        default: infinity
       KERNEL_PROFILE:
         description: 'LumiROM kernel configuration profile (ignored for AOSP)'
         type: choice
@@ -63,7 +63,7 @@ on: # [push]
           - both
           - baka
           - wsu
-        default: baka
+        default: wsu
       TG_RECIPENT:
         description: 'group id'
         required: true
