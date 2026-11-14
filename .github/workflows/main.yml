@@ -31,6 +31,15 @@ on: # [push]
           - A16
           - common
         default: common
+      KERNEL_PROFILE:
+        description: 'LumiROM kernel configuration profile (ignored for AOSP)'
+        type: choice
+        options:
+          - Battery
+          - Performance
+          - Stock
+        required: true
+        default: Stock
       NOTES:
         description: 'notes to print out'
         required: false
@@ -71,6 +80,7 @@ env:
   REPO: ${{ github.event.inputs.KREPO }}
   RUN_NUM: ${{ github.run_number }}_${{ github.run_attempt }}
   KERNEL_BRANCH: ${{ github.event.inputs.KBRANCH }}
+  KERNEL_PROFILE: ${{ github.event.inputs.KERNEL_PROFILE }}
   NOTE: ${{ github.event.inputs.NOTES }}
   COMPILERS: ${{ github.event.inputs.COMPILER }}
   PATCH_KSU: ${{ github.event.inputs.KSU }}
@@ -125,7 +135,7 @@ jobs:
           run: |
             cd kernel
             source ../env
-            bash ../tg_utils.sh msg "gh $RUN_NUM: kernel name: ${kernel_name}%nlgh $RUN_NUM: kernel ver: ${kernel_ver}%nlgh $RUN_NUM: kernel head commit: ${kernel_head}%nlgh $RUN_NUM: defconfig: ${defconfig}"
+            bash ../tg_utils.sh msg "gh $RUN_NUM: kernel name: ${kernel_name}%nlgh $RUN_NUM: kernel ver: ${kernel_ver}%nlgh $RUN_NUM: kernel head commit: ${kernel_head}%nlgh $RUN_NUM: config: ${config_mode}%nlgh $RUN_NUM: profile: ${KERNEL_PROFILE}"
         - name: run compilation scripts
           run: |
             cd kernel
@@ -182,4 +192,3 @@ jobs:
             WORKFLOW_END=$(date +"%s")
             WDIFF=$((WORKFLOW_END - WORKFLOW_START))
             bash tg_utils.sh msg "gh $RUN_NUM: workflow ended in $((WDIFF / 60))m, $((WDIFF % 60))s"
-
