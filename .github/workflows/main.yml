@@ -28,7 +28,7 @@ on: # [push]
           - infinity
           - droidspaces
           - recovery
-        default: legacy
+        default: infinity
       NOTES:
         description: 'notes to print out'
         required: false
@@ -52,7 +52,8 @@ on: # [push]
           - non-root
           - both
           - baka
-          - kow
+          - wsu
+        default: wsu
       DS:
         description: "Droidspaces"
         type: boolean
