@@ -27,6 +27,9 @@ case $1 in
     export PATH="$clang/bin:$gcc64/bin:$gcc/bin:/usr/bin:${PATH}"
     make -j$NJOBS O=out CC=clang LD=ld.lld ARCH=arm64 SUBARCH=arm64 $2
 
+    # Generate autoconf.h and auto.conf before inspecting CONFIG_* macros.
+    make -j$NJOBS O=out prepare
+
     echo "===== CONFIG DIAGNOSTICS ====="
     test -s out/.config || { echo "ERROR: out/.config was not generated"; exit 1; }
     echo "--- kernel config ---"
