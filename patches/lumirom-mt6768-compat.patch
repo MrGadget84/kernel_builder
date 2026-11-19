@@ -1,7 +1,9 @@
 diff --git a/init/main.c b/init/main.c
+index 0000000..0000000 100644
 --- a/init/main.c
 +++ b/init/main.c
-@@ -88,4 +88,8 @@
+@@ -84,6 +84,10 @@
+ #include <linux/io.h>
  #include <linux/cache.h>
  #include <linux/rodata_test.h>
  
@@ -10,27 +12,38 @@ diff --git a/init/main.c b/init/main.c
 +#endif
 +
  #ifdef CONFIG_SEC_BOOTSTAT
-@@ -690,3 +694,3 @@
+ #include <linux/sec_ext.h>
+ #endif
+@@ -687,7 +691,7 @@ asmlinkage __visible void __init start_kernel(void)
+ 	early_boot_irqs_disabled = true;
  	pr_notice("%s", linux_banner);
 -#if defined(CONFIG_UH_RKP) || defined(CONFIG_RUSTUH_RKP)
 +#ifdef CONFIG_UH_RKP
  	rkp_robuffer_init();
-@@ -726,3 +730,3 @@
+ #endif
+ 	setup_arch(&command_line);
+@@ -723,7 +727,7 @@ asmlinkage __visible void __init start_kernel(void)
+ 	sort_main_extable();
+ 	trap_init();
  	mm_init();
 -#if defined(CONFIG_UH_RKP) || defined(CONFIG_RUSTUH_RKP)
 +#ifdef CONFIG_UH_RKP
  	rkp_init();
+ #endif
+ #ifdef CONFIG_RUSTUH_KDP
 diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
+index 0000000..0000000 100644
 --- a/include/net/net_namespace.h
 +++ b/include/net/net_namespace.h
-@@ -10,4 +10,5 @@
+@@ -7,6 +7,7 @@
+ #include <linux/atomic.h>
  #include <linux/refcount.h>
  #include <linux/workqueue.h>
 +#include <linux/rcupdate.h>
  #include <linux/list.h>
  #include <linux/sysctl.h>
-@@ -305,6 +306,15 @@
- #else
+ 
+@@ -296,12 +297,21 @@ static inline struct net *read_pnet(const possible_net_t *pnet)
  	return &init_net;
  #endif
  }
@@ -44,4 +57,4 @@ diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
 +#endif
 +}
 +
- #define for_each_net(VAR)				\
+ #define for_each_net(VAR)				\\
