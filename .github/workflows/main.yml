@@ -29,6 +29,14 @@ on: # [push]
         options:
           - infinity
           - A16
+      PROFILE:
+        description: 'kernel configuration profile'
+        type: choice
+        options:
+          - Stock
+          - Battery
+          - Performance
+        default: Stock
       NOTES:
         description: 'notes to print out'
         required: false
@@ -69,6 +77,7 @@ env:
   REPO: ${{ github.event.inputs.KREPO }}
   RUN_NUM: ${{ github.run_number }}_${{ github.run_attempt }}
   KERNEL_BRANCH: ${{ github.event.inputs.KBRANCH }}
+  BUILD_PROFILE: ${{ github.event.inputs.PROFILE }}
   NOTE: ${{ github.event.inputs.NOTES }}
   COMPILERS: ${{ github.event.inputs.COMPILER }}
   PATCH_KSU: ${{ github.event.inputs.KSU }}
