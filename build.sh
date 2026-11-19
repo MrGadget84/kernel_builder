@@ -8,7 +8,11 @@ case "${BUILD_PROFILE:-Stock}" in
   Stock|"")
     ;;
   Battery|Performance)
-    profile_config="${maindir}/arch/${ARCH}/configs/${BUILD_PROFILE,,}.config"
+    case "${BUILD_PROFILE}" in
+      Battery) profile_name="battery" ;;
+      Performance) profile_name="perf" ;;
+    esac
+    profile_config="${maindir}/arch/${ARCH}/configs/${profile_name}.config"
     if [ ! -f "${profile_config}" ]; then
       echo "ERROR: ${BUILD_PROFILE} profile is unavailable for this kernel source" >&2
       exit 1
