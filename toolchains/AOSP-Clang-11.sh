@@ -29,10 +29,23 @@ case $1 in
 
     echo "===== CONFIG DIAGNOSTICS ====="
     test -s out/.config || { echo "ERROR: out/.config was not generated"; exit 1; }
+    echo "--- kernel config ---"
     grep -E '^(CONFIG_KDP_NS|CONFIG_RUSTUH_KDP_NS)=' out/.config || true
-    grep -E '^(CONFIG_KDP_NS|CONFIG_RUSTUH_KDP_NS)=' out/include/config/auto.conf 2>/dev/null || true
+    for f in out/include/config/auto.conf out/include/generated/autoconf.h; do
+      echo "--- $f ---"
+      if [ -f "$f" ]; then
+        grep -n -E 'CONFIG_KDP_NS|CONFIG_RUSTUH_KDP_NS' "$f" || echo "Neither KDP NS symbol is present"
+      else
+        echo "MISSING"
+      fi
+    done
+    echo "--- mount struct ---"
+    grep -n -B3 -A3 'struct vfsmount \*mnt;' fs/mount.h || true
+    echo "--- namespace access ---"
     grep -n -B4 -A4 'mnt->mnt.mnt_flags.*MNT_LOCKED' fs/namespace.c || true
     grep -n -B4 -A4 'mnt->mnt->mnt_flags.*MNT_LOCKED' fs/namespace.c || true
+    echo "--- source revision / changes ---"
+    git rev-parse HEAD
     git status --short -- fs/namespace.c fs/mount.h
     echo "===== END CONFIG DIAGNOSTICS ====="
     make -j$NJOBS O=out \
