@@ -53,4 +53,4 @@ diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
 +#endif
 +}
 +
- #define for_each_net(VAR)				\\
+ #define for_each_net(VAR)				\
