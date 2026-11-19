@@ -14,7 +14,7 @@ case "${BUILD_PROFILE:-Stock}" in
       exit 1
     fi
     if ! grep -q "^# BUILDER_PROFILE=${BUILD_PROFILE}$" "${defconfig_file}"; then
-      printf '\\n# BUILDER_PROFILE=%s\\n' "${BUILD_PROFILE}" >> "${defconfig_file}"
+      printf '\n# BUILDER_PROFILE=%s\n' "${BUILD_PROFILE}" >> "${defconfig_file}"
       cat "${profile_config}" >> "${defconfig_file}"
     fi
     ;;
