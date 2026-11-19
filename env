@@ -49,7 +49,7 @@ if [ ! -f "${defconfig_file}" ]; then
 fi
 
 export kernel_head="$(git log --pretty=format:'%h' -1)"
-export kernel_name=$(grep '^CONFIG_LOCALVERSION=' "${defconfig_file}" | tail -n1 | sed 's/CONFIG_LOCALVERSION="-*//' | sed 's/"*//')
+export kernel_name=$(grep '^CONFIG_LOCALVERSION=' "${defconfig_file}" | tail -n1 | sed -e 's/^CONFIG_LOCALVERSION="//' -e 's/"$//' -e 's/^-//')
 export kernel_ver="$(make kernelversion)"
 export TIME=$(date +"%y%m%d-%H%M")
 
