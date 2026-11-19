@@ -13,7 +13,7 @@ index 0000000..0000000 100644
  #ifdef CONFIG_SEC_BOOTSTAT
  #include <linux/sec_ext.h>
  #endif
-@@ -686,9 +690,9 @@ asmlinkage __visible void __init start_kernel(void)
+@@ -689,6 +689,6 @@ asmlinkage __visible void __init start_kernel(void)
  	page_address_init();
  	pr_notice("%s", linux_banner);
 -#if defined(CONFIG_UH_RKP) || defined(CONFIG_RUSTUH_RKP)
@@ -21,7 +21,7 @@ index 0000000..0000000 100644
  	rkp_robuffer_init();
  #endif
  	setup_arch(&command_line);
-@@ -722,7 +726,7 @@ asmlinkage __visible void __init start_kernel(void)
+@@ -725,6 +725,6 @@ asmlinkage __visible void __init start_kernel(void)
  	trap_init();
  	mm_init();
 -#if defined(CONFIG_UH_RKP) || defined(CONFIG_RUSTUH_RKP)
@@ -33,14 +33,14 @@ diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
 index 0000000..0000000 100644
 --- a/include/net/net_namespace.h
 +++ b/include/net/net_namespace.h
-@@ -8,6 +8,7 @@
+@@ -8,5 +8,6 @@
  #include <linux/atomic.h>
  #include <linux/refcount.h>
  #include <linux/workqueue.h>
 +#include <linux/rcupdate.h>
  #include <linux/list.h>
  #include <linux/sysctl.h>
-@@ -307,6 +308,15 @@ static inline struct net *read_pnet(const possible_net_t *pnet)
+@@ -300,10 +301,19 @@ static inline struct net *read_pnet(const possible_net_t *pnet)
  #endif
  }
  
