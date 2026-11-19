@@ -28,7 +28,7 @@ case $1 in
     make -j$NJOBS O=out CC=clang LD=ld.lld ARCH=arm64 SUBARCH=arm64 $2
 
     # Generate autoconf.h and auto.conf before inspecting CONFIG_* macros.
-    make -j$NJOBS O=out prepare
+    make -j$NJOBS O=out CC=clang LD=ld.lld ARCH=arm64 SUBARCH=arm64 prepare
 
     echo "===== CONFIG DIAGNOSTICS ====="
     test -s out/.config || { echo "ERROR: out/.config was not generated"; exit 1; }
