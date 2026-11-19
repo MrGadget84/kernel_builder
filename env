@@ -32,10 +32,20 @@ export zipper="${outside}/zipper"
 export defconfig_file="${maindir}/arch/${ARCH}/configs/${defconfig}"
 
 if [ ! -f "${defconfig_file}" ]; then
-  if [ -f "${maindir}/arch/${ARCH}/configs/mt6768-unifiedk414_lineage_defconfig" ]; then
-    echo "New modular Kbuild detected! Adjusting vars for branch Infinity..."
-    cat "${maindir}/arch/${ARCH}/configs/mt6768-unifiedk414_lineage_defconfig" "${maindir}/arch/${ARCH}/configs/a32.config" > "${maindir}/arch/${ARCH}/configs/a32_lineage_defconfig"
+  configs_dir="${maindir}/arch/${ARCH}/configs"
+
+  if [ -f "${configs_dir}/mt6768-unifiedk414_lineage_defconfig" ] && [ -f "${configs_dir}/a32.config" ]; then
+    echo "Generating A32 defconfig from modular MT6768 config..."
+    cat "${configs_dir}/mt6768-unifiedk414_lineage_defconfig" "${configs_dir}/a32.config" > "${defconfig_file}"
+  elif [ -f "${configs_dir}/a32_defconfig" ] && [ -f "${configs_dir}/a32.config" ]; then
+    echo "Generating A32 defconfig from LumiROM base config..."
+    cat "${configs_dir}/a32_defconfig" "${configs_dir}/a32.config" > "${defconfig_file}"
   fi
+fi
+
+if [ ! -f "${defconfig_file}" ]; then
+  echo "ERROR: A32 defconfig not found: ${defconfig_file}" >&2
+  exit 1
 fi
 
 export kernel_head="$(git log --pretty=format:'%h' -1)"
