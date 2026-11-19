@@ -4,6 +4,26 @@ export maindir="$(pwd)"
 export outside="${maindir}/.."
 source "${outside}/$2env"
 
+case "${BUILD_PROFILE:-Stock}" in
+  Stock|"")
+    ;;
+  Battery|Performance)
+    profile_config="${maindir}/arch/${ARCH}/configs/${BUILD_PROFILE,,}.config"
+    if [ ! -f "${profile_config}" ]; then
+      echo "ERROR: ${BUILD_PROFILE} profile is unavailable for this kernel source" >&2
+      exit 1
+    fi
+    if ! grep -q "^# BUILDER_PROFILE=${BUILD_PROFILE}$" "${defconfig_file}"; then
+      printf '\\n# BUILDER_PROFILE=%s\\n' "${BUILD_PROFILE}" >> "${defconfig_file}"
+      cat "${profile_config}" >> "${defconfig_file}"
+    fi
+    ;;
+  *)
+    echo "ERROR: unknown build profile: ${BUILD_PROFILE}" >&2
+    exit 1
+    ;;
+esac
+
 [ -z "$NJOBS" ] && export NJOBS=$(nproc --all) || :
 
 pack() {
