@@ -136,13 +136,6 @@ jobs:
               bash tg_utils.sh msg "gh $RUN_NUM: cloning kernel source%nlgh $RUN_NUM: repo: $REPO%nlgh $RUN_NUM: branch: $KERNEL_BRANCH"
             fi
             git clone --depth=1 --single-branch $REPO -b $KERNEL_BRANCH kernel
-        - name: apply LumiROM compatibility patch
-          if: ${{ github.event.inputs.KREPO == 'https://github.com/MrGadget84/white_kernel_samsung_mt6768_lumirom' && github.event.inputs.KBRANCH == 'infinity' }}
-          run: |
-            cd kernel
-            git apply --check ../patches/lumirom-mt6768-compat.patch
-            git apply ../patches/lumirom-mt6768-compat.patch
-            echo "Applied LumiROM MT6768 RKP/netns compatibility patch"
         - name: print kernel info
           run: |
             cd kernel
